@@ -9,12 +9,12 @@ import { environment } from '../environments/environment';
 })
 export class ChannelServiceService {
 
-  //api
   private apiUrl = environment.apiUrl;
+  private channelDetailsApi = environment.channelDetailsApi;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  //get channels and satellite
+  // Get Channel + Satellite data
   getData(): Observable<ChannelApiResponse> {
     return this.http.get<ChannelApiResponse>(this.apiUrl + 'GetDataForUI');
   }
@@ -29,4 +29,14 @@ export class ChannelServiceService {
       throw error;
     }
   }
+
+  // 👇 New function: Get Channel Details (HTML)
+  getChannelDetails(name: string): Observable<string> {
+    const encodedName = encodeURIComponent(name); // encode channel name
+    return this.http.get(
+      `${this.channelDetailsApi}${encodedName}`,  // safe URL
+      { responseType: 'text' }   // Return raw HTML
+    );
+  }
+
 }

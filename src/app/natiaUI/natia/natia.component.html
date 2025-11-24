@@ -2,9 +2,17 @@
 
   <!-- 🎄 New Year / Christmas Animation -->
   <div *ngIf="newYearActive" class="snow-container">
-    <div class="snowflake" *ngFor="let flake of snowflakes; trackBy: trackBySnowflake" [style.left.px]="flake.x"
-      [style.top.px]="flake.y" [style.width.px]="flake.size" [style.height.px]="flake.size"></div>
+    <div *ngFor="let flake of snowflakes; trackBy: trackByFlakeId" class="snowflake" [ngStyle]="{
+      left: flake.x + 'px',
+      top: flake.y + 'px',
+      width: flake.size + 'px',
+      height: flake.size + 'px',
+      opacity: flake.opacity
+    }"></div>
+
+
   </div>
+
 
 
   <!-- live video background-->
@@ -17,7 +25,6 @@
   <video class="bg-video night-video" autoplay muted loop playsinline>
     <source src="assets/video/dark-forest-winter.mp4" type="video/mp4" />
   </video>
-
 
 
   <!-- 🌡️ Temperature Info -->
@@ -59,8 +66,8 @@
   </div>
 
   <!-- christmas-tree -->
-  <img class="christmas-tree" src="assets/gif/kstr-kochstrasse.gif" alt="christmas-tree">
-
+  <!-- <img class="christmas-tree" src="assets/gif/christmas-tree-joypixels.gif" alt="christmas-tree">
+ -->
 
 
   <!-- Temperature loading placeholder -->
@@ -82,7 +89,8 @@
         <hr class="border-light line" />
 
         <div class="col p-0 " *ngFor="let ch of channels; trackBy: trackByOrder">
-          <div class="badge text-center channel-pill" [ngClass]="{
+          <div class="badge text-center channel-pill" (mouseenter)="onChannelHover(ch.ChanellName, $event)"
+            (mouseleave)="onMouseLeave()" [ngClass]="{
             'natia-error pulse-error': ch.HaveError,
             'natia-test text-light opacity-50': ch.IsDIsable && !ch.HaveError,
             'natia-success': !ch.IsDIsable && !ch.HaveError
@@ -97,6 +105,12 @@
       </div>
     </div>
   </div>
+
+  <!-- 🎯 FUTURISTIC HOVER TOOLTIP -->
+  <div class="hover-tooltip-future" *ngIf="hoverHtml" [innerHTML]="hoverHtml"
+    [ngStyle]="{'top.px': hoverY + 20, 'left.px': hoverX + 20}">
+  </div>
+
 
   <!-- Duck -->
   <div class="duck-container" *ngIf="currentAnimations === 'duck'">

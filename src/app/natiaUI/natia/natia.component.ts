@@ -1,5 +1,5 @@
 
-import { Component, OnInit, ChangeDetectorRef, NgZone, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, NgZone, ElementRef, ViewChild, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ChannelServiceService } from '../../../service/channel-service.service';
 import { SignalRService } from '../../../service/signal-rservice.service';
@@ -13,8 +13,10 @@ import { CardInfoToActivate } from '../../../model/card-info-to-activate';
 import { RegionRelay } from '../../../model/region-relay';
 import { DiscoMessage } from '../../../model/disco-message';
 import { EmrTemperature } from '../../../model/emr-temperature';
-import { log } from 'node:console';
 import { RouterModule } from '@angular/router';
+import { Snowflake } from '../../../model/snowflake';
+
+
 
 @Component({
   selector: 'app-natia',
@@ -40,7 +42,17 @@ export class NatiaComponent implements OnInit {
   currentTime: Date = new Date();
   private timer: any;
   newYearActive = false;
-  snowflakes: { id: number; x: number; y: number; size: number; speed: number }[] = [];
+  snowflakes: Snowflake[] = [];
+
+
+
+
+  //channels detail info
+  hoverHtml: string | null = null;
+  isLoading = false;
+  hoverX = 0;
+  hoverY = 0;
+
 
 
 
@@ -65,7 +77,7 @@ export class NatiaComponent implements OnInit {
     //funny animation
     this.startAnimationCycle();
 
-    // 🎄 Start snow effect automatically
+    // // 🎄 Start snow effect automatically
     this.startNewYearAnimation();
 
     // check theme immediately
@@ -87,6 +99,8 @@ export class NatiaComponent implements OnInit {
       clearInterval(this.timer);
     }
   }
+
+
 
   //fanny animation
   startAnimationCycle() {
@@ -167,6 +181,41 @@ export class NatiaComponent implements OnInit {
     this.channels = [];
     this.satellites = [];
     this.cdr.detectChanges();
+  }
+
+
+  // Channel detail hover
+  onChannelHover(name: string, event: MouseEvent) {
+    this.hoverX = event.clientX;
+    this.hoverY = event.clientY;
+    this.isLoading = true;
+    this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
+
+    this.channelService.getChannelDetails(name).subscribe({
+      next: (html) => {
+        if (html && html.trim() !== '') {
+          // If response has content
+          this.hoverHtml = html;
+          console.log(`✅ Channel details loaded for ${name}:`, html);
+        } else {
+          // If response is empty or null
+          this.hoverHtml = `<b style='color:orange'>No details available for ${name}</b>`;
+          console.warn(`⚠️ No details returned for ${name}`);
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        // Log full error object
+        console.error(`❌ Error loading channel details for ${name}:`, err);
+        this.hoverHtml = `<b style='color:red'>Error loading details for ${name}</b>`;
+        this.isLoading = false;
+      }
+    });
+  }
+
+
+  onMouseLeave() {
+    this.hoverHtml = null;
   }
 
   //signaler
@@ -306,48 +355,77 @@ export class NatiaComponent implements OnInit {
   }
 
 
-  // 🎄 Winter Snow Animation
   startNewYearAnimation() {
     const now = new Date();
-    const month = now.getMonth(); // 0 = January, 10 = November, 11 = December
+    const month = now.getMonth();
     const day = now.getDate();
 
-    // Active between November 25 and January 25
+    // Active from Nov 18 to Jan 30
     const isHoliday =
-      (month === 10 && day >= 18) ||   // November 25+
-      (month === 11) ||               // December
-      (month === 0 && day <= 30);     // January 1–25
+      (month === 10 && day >= 18) ||
+      (month === 11) ||
+      (month === 0 && day <= 30);
 
     if (!isHoliday) return;
 
     this.newYearActive = true;
-    this.generateSnowflakes(100); // number of flakes (you can increase/decrease)
-    requestAnimationFrame(() => this.animateSnowflakes());
+    this.generateSnowflakes();
+    this.animateSnowflakes();
   }
 
-  generateSnowflakes(count: number) {
+  generateSnowflakes() {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const count = Math.min(100, Math.floor((screenWidth * screenHeight) / 10000));
+
     this.snowflakes = Array.from({ length: count }).map((_, i) => ({
       id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: 2 + Math.random() * 4,
-      speed: 0.5 + Math.random() * 1.5
+      x: Math.random() * screenWidth,
+      y: Math.random() * screenHeight,
+      size: 2 + Math.random() * 5,
+      speed: 0.5 + Math.random() * 1.5,
+      drift: Math.random() * 0.5 - 0.25,
+      sway: Math.random() * Math.PI * 2,
+      swaySpeed: 0.01 + Math.random() * 0.02,
+      opacity: 0.6 + Math.random() * 0.4
     }));
   }
 
   animateSnowflakes() {
     if (!this.newYearActive) return;
 
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+
     this.snowflakes.forEach(flake => {
       flake.y += flake.speed;
-      if (flake.y > window.innerHeight) {
+      flake.sway += flake.swaySpeed;
+      flake.x += Math.sin(flake.sway) * flake.drift;
+
+      if (flake.y > screenHeight) {
         flake.y = -flake.size;
-        flake.x = Math.random() * window.innerWidth;
+        flake.x = Math.random() * screenWidth;
+        flake.speed = 0.5 + Math.random() * 1.5;
+        flake.drift = Math.random() * 0.5 - 0.25;
+        flake.swaySpeed = 0.01 + Math.random() * 0.02;
+        flake.opacity = 0.6 + Math.random() * 0.4;
       }
+
+      if (flake.x > screenWidth) flake.x = 0;
+      if (flake.x < 0) flake.x = screenWidth;
     });
 
-    this.cdr.detectChanges();
     requestAnimationFrame(() => this.animateSnowflakes());
+  }
+
+  @HostListener('window:resize')
+  onResize() {
+    this.generateSnowflakes();
+  }
+
+  // trackBy function for ngFor
+  trackByFlakeId(index: number, flake: Snowflake) {
+    return flake.id;
   }
 
   // Angular's trackBy function to optimize ngFor performance.

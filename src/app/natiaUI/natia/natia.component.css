@@ -1,4 +1,3 @@
-@charset "UTF-8";
 .chanells-container .channel-pill {
   padding: 0.6rem 0.75rem;
   font-size: 0.9rem;
@@ -11,12 +10,63 @@
   width: 260px;
   border: 1px solid #ffffff;
   border-radius: 6px;
+  cursor: pointer;
 }
 .chanells-container .channel-pill .channel-number {
   color: #1d1d1d;
 }
 .chanells-container .channel-pill:hover {
   transform: scale(1.05);
+}
+
+.hover-tooltip-future {
+  position: fixed;
+  max-width: 320px;
+  padding: 12px 18px;
+  border-radius: 12px;
+  z-index: 9999;
+  pointer-events: none;
+  /* Glassmorphism effect */
+  background: rgba(30, 30, 40, 0.85);
+  backdrop-filter: blur(8px) saturate(180%);
+  -webkit-backdrop-filter: blur(8px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* Text & font */
+  color: #d1d1d1;
+  font-size: 15px;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.3rem;
+  /* Shadow & glow */
+  box-shadow: 0 0 15px rgba(202, 202, 202, 0.3), 0 0 25px rgba(255, 255, 255, 0.2);
+  /* Animation */
+  transform: translateY(-5px);
+  transition: transform 0.15s ease-out, opacity 0.2s ease-in-out;
+  opacity: 0;
+  animation: tooltipFadeIn 0.2s forwards;
+}
+
+/* Pointer Arrow */
+.hover-tooltip-future::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: -8px;
+  /* left side pointer */
+  border-width: 8px;
+  border-style: solid;
+  border-color: transparent rgba(30, 30, 40, 0.85) transparent transparent;
+}
+
+/* Fade-in animation */
+@keyframes tooltipFadeIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* Optional hover glow */
+.hover-tooltip-future:hover {
+  box-shadow: 0 0 25px rgba(255, 255, 255, 0.6), 0 0 35px rgba(226, 226, 226, 0.4);
 }
 
 .satellite-container {
@@ -442,7 +492,7 @@
   color: #ffc107;
 }
 
-/* ❄️ Snow Effect */
+/* Snow Container */
 .snow-container {
   position: fixed;
   top: 0;
@@ -450,37 +500,21 @@
   width: 100%;
   height: 100%;
   pointer-events: none;
-  overflow: hidden;
   z-index: 9999;
+  overflow: hidden;
+  background: radial-gradient(circle at top, rgba(0, 0, 0, 0.05), transparent 70%);
 }
 
+/* Snowflakes */
 .snowflake {
   position: absolute;
   background: white;
   border-radius: 50%;
-  opacity: 0.9;
-  box-shadow: 0 0 6px rgba(255, 255, 255, 0.8);
-  animation: fall 10s linear infinite, sparkle 2s ease-in-out infinite alternate;
+  box-shadow: 0 0 4px rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+  transition: transform 0.1s linear;
 }
 
-@keyframes fall {
-  0% {
-    transform: translateY(0) rotate(0deg);
-  }
-  100% {
-    transform: translateY(100vh) rotate(360deg);
-  }
-}
-@keyframes sparkle {
-  from {
-    opacity: 0.5;
-    transform: scale(0.9);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1.2);
-  }
-}
 .christmas-tree {
   width: 180px;
   position: absolute;
@@ -497,5 +531,12 @@
   }
   .emr-temp-row {
     margin: 0;
+  }
+  .christmas-tree {
+    left: 188px !important;
+  }
+  .robot-container {
+    max-width: 298px;
+    left: 27px;
   }
 }/*# sourceMappingURL=natia.component.css.map */
