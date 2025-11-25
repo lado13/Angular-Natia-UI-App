@@ -32,11 +32,12 @@
 
     <div class="d-flex justify-content-between align-items-center flex-wrap">
 
-      <a href="/system-streams" target="_blank">
+      <a [routerLink]="['/system-streams']">
         <!-- ⏰ Watch (left side) -->
         <div class="classic-watch shadow-sm rounded-3 px-3 py-1">
-          ⏰{{ currentTime | date:'HH:mm:ss' }}
+          ⏰{{ currentTime | date:'HH:mm' }}
         </div>
+        <img class="christmas-mistletoe" src="assets/images/mistletoe.png">
       </a>
 
 
@@ -44,6 +45,8 @@
 
       <!-- 🌡️ Temperature + Humidity (right side) -->
       <div class="d-flex justify-content-center gap-3 flex-wrap">
+
+        <img class="christmas-candy" src="assets/images/christmas-socks.png">
 
         <i class="fa-solid fa-bell fa-shake bell-temp-icon" *ngIf="isHot" style="color: #deeb1e;"></i>
 
@@ -66,8 +69,13 @@
   </div>
 
   <!-- christmas-tree -->
-  <!-- <img class="christmas-tree" src="assets/gif/christmas-tree-joypixels.gif" alt="christmas-tree">
- -->
+  <img class="christmas-tree" src="assets/images/christmas-tree.png" alt="christmas-tree">
+
+
+
+  <!-- present firework -->
+  <canvas #fwCanvas class="fw-layer"></canvas>
+  <img src="assets/images/present.png" class="present" (click)="boom($event)">
 
 
   <!-- Temperature loading placeholder -->
@@ -89,7 +97,7 @@
         <hr class="border-light line" />
 
         <div class="col p-0 " *ngFor="let ch of channels; trackBy: trackByOrder">
-          <div class="badge text-center channel-pill" (mouseenter)="onChannelHover(ch.ChanellName, $event)"
+          <div class="badge text-center channel-pill" (click)="onChannelHover(ch.ChanellName, $event)"
             (mouseleave)="onMouseLeave()" [ngClass]="{
             'natia-error pulse-error': ch.HaveError,
             'natia-test text-light opacity-50': ch.IsDIsable && !ch.HaveError,
@@ -136,7 +144,8 @@
 
   <!-- robot say -->
   <div *ngIf="robotSpeech" class="text-center mt-4 robot-container">
-    <i class="fa-solid fa-message fa-bounce bell-icon"></i>
+    <!-- <i class="fa-solid fa-message fa-bounce bell-icon"></i> -->
+    <img class="bell-icon" src="assets/images/envelope.png">
     <h5 class="p-3 rounded-3 d-inline-block">
       <img class="robot-img" src="assets/gif/sports-sportsmanias.gif" alt="happy-robot" width="100" height="100">
       {{ robotSpeech }}
@@ -285,10 +294,12 @@
   </div>
 
 
+
   <hr class="border-light underline line" />
 
   <!-- 📡 Satellite Overview -->
   <div class="text-center container-fluid satellite-container">
+
     <div *ngIf="satellites.length === 0" class="text-center text-light mt-5">
       <img class="loader" src="assets/svg/loader.svg" alt="Loading...">
       ⏳ Loading satellites...
@@ -301,7 +312,7 @@
             <span
               *ngIf="sat.Degree && !['Relay','Optic','ENCODERS','MULTISWITCHES','MUKHIANII','MUKHIANI I','MUKHIANI II'].includes(sat.Degree.toString())"
               class="glow-icon">
-              🛰️
+              <i class="fa-solid fa-satellite" style="color: #ffffff;"></i>
             </span>
             {{ sat.Degree }}
           </div>

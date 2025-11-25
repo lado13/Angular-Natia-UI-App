@@ -4,12 +4,13 @@ import { Program } from '../../model/program';
 import { Stream } from '../../model/stream';
 import { CommonModule } from '@angular/common';
 import { SystemStreamInfo } from '../../model/systemStreamInfo';
+import { RouterLink } from '@angular/router';
 
 
 @Component({
   selector: 'app-system-stream-info',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './system-stream-info.component.html',
   styleUrl: './system-stream-info.component.scss'
 })
@@ -21,7 +22,7 @@ export class SystemStreamInfoComponent {
   error = '';
 
   page = 1;
-  pageSize = 2; // number of streams per page
+  pageSize = 3; // number of streams per page
 
   constructor(private service: SystemStreamInfoService) { }
 

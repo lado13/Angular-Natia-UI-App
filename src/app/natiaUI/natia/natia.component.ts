@@ -64,6 +64,8 @@ export class NatiaComponent implements OnInit {
     private themeService: ThemeServiceService
   ) { }
 
+
+
   async ngOnInit(): Promise<void> {
     await this.loadDataWithRetry();
     await this.initSignalR();
@@ -77,7 +79,7 @@ export class NatiaComponent implements OnInit {
     //funny animation
     this.startAnimationCycle();
 
-    // // 🎄 Start snow effect automatically
+    // 🎄 Start snow effect automatically
     this.startNewYearAnimation();
 
     // check theme immediately
@@ -91,6 +93,14 @@ export class NatiaComponent implements OnInit {
     this.timer = setInterval(() => {
       this.currentTime = new Date();
     }, 1000);
+
+
+
+    //present firework
+    setInterval(() => {
+      this.autoClickPresent();
+    }, 3600000);
+
 
   }
 
@@ -355,6 +365,7 @@ export class NatiaComponent implements OnInit {
   }
 
 
+  //winter flake
   startNewYearAnimation() {
     const now = new Date();
     const month = now.getMonth();
@@ -422,6 +433,117 @@ export class NatiaComponent implements OnInit {
   onResize() {
     this.generateSnowflakes();
   }
+
+
+
+  //present firework
+  @ViewChild('fwCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  ctx!: CanvasRenderingContext2D;
+  particles: any[] = [];
+
+
+
+  autoClickPresent() {
+    const present = document.querySelector('.present') as HTMLElement;
+    if (!present) return;
+
+    // Perform 3 automatic clicks
+    for (let i = 0; i < 1; i++) {
+      setTimeout(() => {
+        present.click();
+      }, i * 300); // 3 clicks: 0ms, 300ms, 600ms
+    }
+  }
+
+
+  ngAfterViewInit() {
+    const canvas = this.canvasRef.nativeElement;
+    this.ctx = canvas.getContext('2d')!;
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    this.loop();
+  }
+
+  // Fireworks at screen center
+  boom(event?: MouseEvent) {
+    const x = window.innerWidth / 2;
+    const y = window.innerHeight / 2;
+
+    const colors = [
+      "hsl(0,100%,70%)",
+      "hsl(40,100%,70%)",
+      "hsl(120,100%,60%)",
+      "hsl(200,100%,65%)",
+      "hsl(280,100%,70%)",
+      "hsl(330,100%,75%)"
+    ];
+
+    for (let i = 0; i < 30; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 1 + Math.random() * 8;
+
+      this.particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        alpha: 1,
+        size: 3 + Math.random() * 3,
+        trail: [],
+        color: colors[Math.floor(Math.random() * colors.length)]
+      });
+    }
+  }
+
+  loop() {
+    const ctx = this.ctx;
+    const canvas = this.canvasRef.nativeElement;
+
+    // SOFT FADE (better than full clear)
+    ctx.fillStyle = "rgba(0, 0, 0, 0)"; // transparent canvas
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    this.particles = this.particles.filter(p => p.alpha > 0.02);
+
+    this.particles.forEach(p => {
+      // Movement
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.05; // Gravity for nicer arcs
+      p.alpha -= 0.015;
+
+      // Save trail history
+      p.trail.push({ x: p.x, y: p.y, alpha: p.alpha });
+      if (p.trail.length > 10) p.trail.shift(); // Max trail length
+
+      // Draw TRAIL
+      for (let i = 0; i < p.trail.length; i++) {
+        const t = p.trail[i];
+        ctx.globalAlpha = t.alpha * (i / p.trail.length);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(t.x, t.y, p.size * (i / p.trail.length), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // MAIN PARTICLE GLOW
+      ctx.globalAlpha = p.alpha;
+      ctx.shadowBlur = 25;   // BIG BLOOM
+      ctx.shadowColor = p.color;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+
+    requestAnimationFrame(() => this.loop());
+  }
+
+
+
+
 
   // trackBy function for ngFor
   trackByFlakeId(index: number, flake: Snowflake) {
