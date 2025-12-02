@@ -196,4 +196,20 @@ body {
 .back-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.voice-status {
+  display: inline-block;
+  padding: 4px 10px;
+  font-size: 0.85rem;
+  background-color: rgba(33, 37, 41, 0.5607843137);
+  color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+}
+.voice-status .last-command {
+  font-style: italic;
+  color: #d4d4d4;
+  margin-left: 4px;
 }/*# sourceMappingURL=system-stream-info.component.css.map */

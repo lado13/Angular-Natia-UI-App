@@ -1,5 +1,6 @@
 <div class="container-fluid py-4 pt-1 p-4 ps-5 pb-3 pe-5">
 
+
   <!-- 🎄 New Year / Christmas Animation -->
   <div *ngIf="newYearActive" class="snow-container">
     <div *ngFor="let flake of snowflakes; trackBy: trackByFlakeId" class="snowflake" [ngStyle]="{
@@ -27,6 +28,18 @@
   </video>
 
 
+
+
+
+
+
+
+
+
+
+
+
+
   <!-- 🌡️ Temperature Info -->
   <div *ngIf="temperatureInfo" class="temperature-info-container mt-4 container-fluid">
 
@@ -39,6 +52,61 @@
         </div>
         <img class="christmas-mistletoe" src="assets/images/mistletoe.png">
       </a>
+
+
+
+      <!-- Voice Status -->
+      <!-- <div class="voice-status">
+        <i class="fa-solid fa-microphone"></i> <strong>{{ status }}</strong>
+        <span *ngIf="lastCommand" class="last-command">| "{{ lastCommand }}"</span>
+      </div> -->
+
+
+      <div class="weather-widget">
+        <div *ngIf="isWeatherLoading" class="loading text-light">
+          <img class="loader" src="assets/svg/loader.svg">
+          Loading...
+        </div>
+
+        <div class="weather-cards" *ngIf="!isWeatherLoading && weatherList.length > 0; else noWeather">
+          <div class="weather-card" *ngFor="let weather of weatherList; trackBy: trackByWeatherTimestamp">
+
+            <div class="weather-row">
+              <span class="weather-icon">🌡️</span>
+              <span class="weather-value">{{ weather.temperature }}°C</span>
+            </div>
+
+            <div class="weather-row">
+              <span class="weather-icon">💨</span>
+              <span class="weather-value">{{ weather.wind }} km/h</span>
+            </div>
+
+            <div class="weather-row" [ngClass]="{'heavy': weather.snow === 'Heavy Snow'}">
+              <span class="weather-icon">❄️</span>
+              <span class="weather-value">{{ weather.snow }}</span>
+            </div>
+
+            <div class="weather-row" [ngClass]="{'heavy': weather.rain === 'Heavy Rain'}">
+              <span class="weather-icon">🌧️</span>
+              <span class="weather-value">{{ weather.rain }}</span>
+            </div>
+
+            <div class="weather-row">
+              <i class="fa-regular fa-clock" style="color: #e8e8e8;"></i>
+              <span class="weather-time">{{ weather.timestamp | date:'HH:mm' }}</span>
+            </div>
+
+
+          </div>
+        </div>
+
+        <ng-template #noWeather>
+          <p class="no-weather">No weather data available.</p>
+        </ng-template>
+      </div>
+
+
+
 
 
 
@@ -83,6 +151,18 @@
     <img class="loader" src="assets/svg/loader.svg" alt="Loading...">
     ⏳ Loading temperature info...
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
 
   <!-- 📺 Channel List -->
   <div class="text-center">
@@ -154,6 +234,11 @@
 
 
 
+
+
+
+
+
   <div class="region-relay-section">
     <!-- Empty state -->
     <div *ngIf="regionRelays.length === 0" class="text-white-50 small">
@@ -213,7 +298,38 @@
         </div>
       </div>
     </div>
+
+
+    <!-- bus-list -->
+    <div class="bus-list-container">
+      <!-- Loading state -->
+      <div *ngIf="isLoading" class="loading">
+        <img class="loader" src="assets/svg/loader.svg">
+        Loading bus arrivals...
+      </div>
+
+      <!-- Bus cards horizontal scroll -->
+      <div *ngIf="!isLoading && buses.length > 0" class="bus-cards">
+        <div *ngFor="let bus of buses" class="bus-card">
+          <div class="bus-number">{{ bus.shortName }}</div>
+          <div class="bus-destination">{{ bus.headsign }}</div>
+          <div class="bus-arrival">{{ bus.realtimeArrivalMinutes }} min</div>
+        </div>
+        <div class="bus-card"><i class="fa-solid fa-bus" style="color: #f2f2f2;"></i></div>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!isLoading && buses.length === 0" class="empty">
+        No bus arrivals available.
+      </div>
+    </div>
+
+
+
   </div>
+
+
+
 
   <div class="d-block container-fluid pe-5 problem-container">
 

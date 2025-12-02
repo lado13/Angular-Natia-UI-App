@@ -388,7 +388,7 @@
     left: 260px;
 
     .emr-temp-background {
-        background-color: rgb(33 37 41 / 56%);
+        background-color: #2125298f;
 
         .emr-temp {
             background-color: #393d41;
@@ -829,9 +829,9 @@
 .present {
     position: absolute;
     bottom: 185px;
-    left: 793px;
-    width: 70px;
-    height: 70px;
+    left: 830px;
+    width: 50px;
+    height: 50px;
     cursor: pointer;
     user-select: none;
     z-index: 99999999999999;
@@ -862,6 +862,138 @@
     }
 }
 
+//voice command  
+.voice-status {
+    display: inline-block;
+    padding: 4px 10px; // small padding
+    font-size: 0.85rem; // smaller text
+    background-color: #2125298f;
+    color: #ffffff; // dark text
+    border-radius: 8px; // rounded corners
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1); // subtle shadow
+    font-family: 'Arial', sans-serif;
+
+    .last-command {
+        font-style: italic;
+        color: #d4d4d4;
+        margin-left: 4px;
+    }
+}
+
+//weather container
+.weather-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 2px 8px;
+    background-color: #0000004b;
+    color: white;
+    border-radius: 5px;
+    max-width: 450px;
+    position: absolute;
+    right: 349px;
+    top: 34px;
+    padding: 9px;
+    border: 1px solid #666666;
+
+    .weather-row {
+        padding-right: 10px;
+    }
+
+}
+
+.no-weather {
+    color: #ffffff;
+}
+
+//bus line container
+.bus-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 12px;
+    color: #fff;
+    padding: 10px;
+    position: absolute;
+    top: 49px;
+}
+
+.loading,
+.empty {
+    text-align: center;
+    opacity: 0.6;
+    font-style: italic;
+}
+
+/* Horizontal scroll container */
+.bus-cards {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+    scrollbar-width: thin;
+
+    .fa-bus {
+        font-size: 58px;
+    }
+
+}
+
+/* Hide scrollbar for Chrome, Edge, Safari */
+.bus-cards::-webkit-scrollbar {
+    height: 6px;
+}
+
+.bus-cards::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+
+.bus-cards::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* Minimalist transparent card */
+.bus-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 70px;
+    padding: 5px 2px;
+    border-radius: 12px;
+    background: rgb(0 0 0 / 38%);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    transition: transform 0.2s ease, background 0.2s ease;
+    cursor: default;
+}
+
+.bus-card:hover {
+    transform: translateY(-3px);
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.bus-number {
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 2px;
+}
+
+.bus-destination {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-bottom: 4px;
+    font-weight: bold;
+}
+
+.bus-arrival {
+    font-size: 12px;
+    font-weight: 500;
+}
 
 
 
@@ -890,6 +1022,21 @@
 
     .present {
         left: 283px !important;
+    }
+
+    .weather-card {
+        display: block;
+        right: 262px;
+    }
+
+
+    .bus-list-container {
+        top: -22px;
+        right: 298px;
+    }
+
+    .bus-cards {
+        display: block;
     }
 
 

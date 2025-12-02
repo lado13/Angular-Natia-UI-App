@@ -15,8 +15,12 @@ import { DiscoMessage } from '../../../model/disco-message';
 import { EmrTemperature } from '../../../model/emr-temperature';
 import { RouterModule } from '@angular/router';
 import { Snowflake } from '../../../model/snowflake';
+import { Router } from '@angular/router';
+import { WeatherUpdate } from '../../../model/weather-update';
+import { BusArrival } from '../../../model/bus-arrival';
 
-
+//system stream
+declare var webkitSpeechRecognition: any;
 
 @Component({
   selector: 'app-natia',
@@ -26,32 +30,65 @@ import { Snowflake } from '../../../model/snowflake';
   styleUrls: ['./natia.component.scss']
 })
 export class NatiaComponent implements OnInit {
+
+  //api channels
   channels: TVChannel[] = [];
+
+  //sattelite
   satellites: Satellite[] = [];
+
+  //server room temperature
   temperatureInfo!: TemperatureInfo;
+
+  //channels signalr
   opticChannels$!: Observable<OpticChannelProblem[]>;
+
+  //card how need activate
   cards$!: Observable<CardInfoToActivate[]>;
+
+  //region relay db
   regionRelays: RegionRelay[] = [];
+
+  //natia voice text
   robotSpeech: string | null = null;
+
+  //natia aniamtion
   currentMessage: DiscoMessage | null = null;
   currentAnimation: string | null = null;
+
+  //emr temeperature
   emrtemperature: EmrTemperature[] = [];
+
+  // Weather updates
+  weatherList: WeatherUpdate[] = [];
+  isWeatherLoading = true; // loading indicator
+
+  //random animation 
   animations: ('duck' | 'bat' | 'squad')[] = ['duck', 'bat', 'squad'];
   currentAnimations: 'duck' | 'bat' | 'squad' | null = null;
   private index = 0;
+
+  //snow flakes
   currentTime: Date = new Date();
   private timer: any;
   newYearActive = false;
   snowflakes: Snowflake[] = [];
-
-
-
 
   //channels detail info
   hoverHtml: string | null = null;
   isLoading = false;
   hoverX = 0;
   hoverY = 0;
+
+
+  // //voice command prop system stream
+  // recognition: any;
+  // isListening = false;
+  // status = "Stopped";
+  // lastCommand = "";
+
+  ////Bus Arrival
+  buses: BusArrival[] = [];
 
 
 
@@ -61,7 +98,8 @@ export class NatiaComponent implements OnInit {
     private signalRService: SignalRService,
     private cdr: ChangeDetectorRef,
     private ngZone: NgZone,
-    private themeService: ThemeServiceService
+    private themeService: ThemeServiceService,
+    private router: Router
   ) { }
 
 
@@ -102,6 +140,9 @@ export class NatiaComponent implements OnInit {
     }, 3600000);
 
 
+    // //input comand system stream
+    // this.startVoice();
+
   }
 
   ngOnDestroy(): void {
@@ -109,6 +150,96 @@ export class NatiaComponent implements OnInit {
       clearInterval(this.timer);
     }
   }
+
+
+
+
+
+
+  // // Voice command Natia system stream (English only)
+  // initVoice() {
+  //   const SpeechRecognition = (window as any).SpeechRecognition || webkitSpeechRecognition;
+  //   if (!SpeechRecognition) {
+  //     console.error("SpeechRecognition not supported");
+  //     return;
+  //   }
+
+  //   this.recognition = new SpeechRecognition();
+  //   this.recognition.lang = "ka-GE"; // English
+  //   this.recognition.continuous = true;
+  //   this.recognition.interimResults = false;
+
+  //   this.recognition.onresult = (event: any) => {
+  //     const text = event.results[event.results.length - 1][0].transcript.trim();
+  //     this.lastCommand = text;
+  //     this.handleCommand(text);
+  //   };
+
+  //   this.recognition.onend = () => {
+  //     if (this.isListening) {
+  //       try { this.recognition.start(); } catch (e) { }
+  //     }
+  //   };
+  // }
+
+  // startVoice() {
+  //   if (this.isListening) return;
+  //   this.initVoice();
+  //   try {
+  //     this.recognition.start();
+  //     this.isListening = true;
+  //     this.status = "Listening...";
+  //   } catch (e) {
+  //     console.error("Voice start failed:", e);
+  //   }
+  // }
+
+  // stopVoice() {
+  //   if (!this.isListening) return;
+  //   this.recognition.stop();
+  //   this.isListening = false;
+  //   this.status = "Stopped";
+  // }
+
+  // handleCommand(text: string) {
+  //   const cmd = text.toLowerCase();
+
+  //   if (cmd.includes("გახსენი სტრიმები") || cmd.includes("სტრიმი")) {
+  //     this.openSystemStreams();
+  //   }
+
+  //   // if (cmd.includes("სტოპ")) {
+  //   //   this.stopVoice();
+  //   // }
+
+  //   // if (cmd.includes('ჩაირთე')) {
+  //   //   this.startVoice();
+
+  //   // }
+
+  //   if (cmd.includes("ცეცხლი") || cmd.includes("ფოიერვერკი")) {
+  //     this.boom();
+  //   }
+  // }
+
+  // openSystemStreams() {
+  //   this.stopVoice();
+  //   this.router.navigate(['/system-streams']); // Angular Router navigation
+  // }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -326,6 +457,55 @@ export class NatiaComponent implements OnInit {
             console.warn('⚠️ Invalid or empty emr temperature data, skipping:', data);
           }
         });
+
+
+        // 🌦️ Weather info
+        this.signalRService.weather$.subscribe((data: any) => {
+          this.isWeatherLoading = false;
+          if (!data) {
+            this.weatherList = [];
+            return;
+          }
+          // Make sure data is always an array
+          const dataArray = Array.isArray(data) ? data : [data];
+          this.weatherList = dataArray.map(item => ({
+            temperature: item.Temperature ?? item.temperature ?? 0,
+            wind: item.Wind ?? item.wind ?? 0,
+            snow: item.Snow ?? 'No Snow',
+            rain: item.Rain ?? 'No Rain',
+            timestamp: new Date().toISOString() // always provide string
+          }));
+
+          this.cdr.detectChanges();
+        });
+
+
+        // 🌦️ Bus arrival info
+        this.signalRService.busArrival$.subscribe((data: BusArrival[] | null) => {
+          this.isLoading = false;
+
+          if (!data || data.length === 0) {
+            this.buses = [];
+            this.cdr.detectChanges();
+            return;
+          }
+
+          const dataArray = Array.isArray(data) ? data : [data];
+
+          // Map to your internal model
+          this.buses = dataArray.map(item => ({
+            shortName: item.shortName ?? '',
+            headsign: item.headsign ?? '',
+            realtimeArrivalMinutes: item.realtimeArrivalMinutes ?? 0
+          }));
+
+          // update Angular UI
+          this.cdr.detectChanges();
+        });
+
+
+
+
 
       });
     } catch (error) {
@@ -575,6 +755,10 @@ export class NatiaComponent implements OnInit {
     return flake.id;
   }
 
+  // trackBy function to prevent string | undefined error
+  trackByWeatherTimestamp(index: number, weather: WeatherUpdate): string {
+    return weather.timestamp ?? index.toString();
+  }
 
 
 

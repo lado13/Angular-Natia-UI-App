@@ -1,5 +1,11 @@
 <div class="container-fluid p-4">
 
+  <!-- Voice Status -->
+  <div class="voice-status">
+    <i class="fa-solid fa-microphone"></i> <strong>{{ status }}</strong>
+    <span *ngIf="lastCommand" class="last-command">| "{{ lastCommand }}"</span>
+  </div>
+
   <!-- Loading / Error -->
   <div *ngIf="loading" class="alert alert-info text-center py-2">
     ⏳ Loading stream info...
@@ -43,9 +49,7 @@
                     <strong>{{ stream?.isVideo ? 'VIDEO' : 'AUDIO' }}</strong> - {{ stream?.codec }}
                   </span>
                   <span class="small text-light small-text">
-                    PID: {{ stream?.pid }},
-                    Packets: {{ stream?.packetCount }},
-                    Lang: {{ stream?.language }}
+                    PID: {{ stream?.pid }}, Packets: {{ stream?.packetCount }}, Lang: {{ stream?.language }}
                   </span>
                 </li>
               </ul>
@@ -82,29 +86,19 @@
     <nav>
       <ul class="pagination pagination-sm">
 
-        <!-- Previous -->
         <li class="page-item" [class.disabled]="page === 1">
-          <a class="page-link" (click)="prevPage()">
-            &lt;
-          </a>
+          <a class="page-link" (click)="prevPage()">&lt;</a>
         </li>
 
-        <!-- Page Numbers -->
         <li class="page-item" *ngFor="let p of [].constructor(totalPages); let i = index"
           [class.active]="page === i + 1">
-          <a class="page-link" (click)="goToPage(i + 1)">
-            {{ i + 1 }}
-          </a>
+          <a class="page-link" (click)="goToPage(i + 1)">{{ i + 1 }}</a>
         </li>
 
-        <!-- Next -->
-        <li class="page-item" [class.disabled]="false">
-          <a class="page-link" (click)="nextPage()">
-            &gt;
-          </a>
+        <li class="page-item" [class.disabled]="page === totalPages">
+          <a class="page-link" (click)="nextPage()">&gt;</a>
         </li>
 
-        <!-- Back button -->
         <a [routerLink]="['/']" class="back-btn">Back</a>
 
       </ul>

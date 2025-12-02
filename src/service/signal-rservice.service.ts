@@ -10,6 +10,8 @@ import { CardInfoToActivate } from '../model/card-info-to-activate';
 import { RegionRelay } from '../model/region-relay';
 import { DiscoMessage } from '../model/disco-message';
 import { EmrTemperature } from '../model/emr-temperature';
+import { WeatherUpdate } from '../model/weather-update';
+import { BusArrival } from '../model/bus-arrival';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +49,12 @@ export class SignalRService {
 
   private emrTemperatureSource = new BehaviorSubject<EmrTemperature[]>([]);
   emrTemperature$ = this.emrTemperatureSource.asObservable();
+
+  private weatherSubject = new BehaviorSubject<WeatherUpdate[]>([]);
+  public weather$ = this.weatherSubject.asObservable();
+
+  private busArrivalSubject = new BehaviorSubject<BusArrival[]>([]);
+  busArrival$ = this.busArrivalSubject.asObservable();
 
   //signaler connection start
   public async startConnection(): Promise<void> {
@@ -217,6 +225,49 @@ export class SignalRService {
         this.emrTemperatureSource.next([]);
       }
     });
+
+
+    // 🌤️ Weather Update
+    this.hubConnection?.on('weatherUpdate', (data: any) => {
+      // Ensure data is always an array
+      const dataArray = Array.isArray(data) ? data : [data];
+
+      if (dataArray.length > 0) {
+        const mappedData: WeatherUpdate[] = dataArray.map(item => ({
+          temperature: item.Temperature ?? item.temperature ?? 0,
+          wind: item.Wind ?? item.wind ?? 0,
+          snow: item.Snow ?? 'No Snow',
+          rain: item.Rain ?? 'No Rain',
+          timestamp: new Date().toISOString(),
+          location: item.Location ?? item.location ?? ''
+        }));
+
+        this.weatherSubject.next(mappedData);
+      } else {
+        console.warn('⚠️ Invalid or empty weatherUpdate data, skipping:', data);
+        this.weatherSubject.next([]);
+      }
+    });
+
+
+    //Bus Arrival
+    this.hubConnection.on('autoArrivalUpdate', (data: any) => {
+      const dataArray = Array.isArray(data) ? data : [data];
+
+      if (dataArray.length > 0) {
+        const mappedData: BusArrival[] = dataArray.map(item => ({
+          shortName: item.shortName ?? '',
+          headsign: item.headsign ?? '',
+          realtimeArrivalMinutes: item.realtimeArrivalMinutes ?? 0
+        }));
+
+        this.busArrivalSubject.next(mappedData);
+      } else {
+        console.warn('⚠️ Invalid or empty autoArrivalUpdate data, skipping:', data);
+        this.busArrivalSubject.next([]);
+      }
+    });
+
 
 
 
