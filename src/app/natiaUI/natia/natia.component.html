@@ -19,23 +19,13 @@
   <!-- live video background-->
   <!-- DAY video -->
   <video class="bg-video day-video" autoplay muted loop playsinline>
-    <source src="assets/video/day-snow.mp4" type="video/mp4" />
+    <source src="assets/video/christmas-tree-in-town.mp4" type="video/mp4" />
   </video>
 
   <!-- NIGHT video -->
   <video class="bg-video night-video" autoplay muted loop playsinline>
-    <source src="assets/video/dark-forest-winter.mp4" type="video/mp4" />
+    <source src="assets/video/glowing-christmas-tree.mp4" type="video/mp4" />
   </video>
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -47,10 +37,10 @@
 
       <a [routerLink]="['/system-streams']">
         <!-- ⏰ Watch (left side) -->
-        <div class="classic-watch shadow-sm rounded-3 px-3 py-1">
+        <div class="classic-watch shadow-sm rounded-3 px-3 py-1 christmas">
           ⏰{{ currentTime | date:'HH:mm' }}
         </div>
-        <img class="christmas-mistletoe" src="assets/images/mistletoe.png">
+        <img class="christmas-mistletoe" src="assets/images/bell.png">
       </a>
 
 
@@ -60,6 +50,28 @@
         <i class="fa-solid fa-microphone"></i> <strong>{{ status }}</strong>
         <span *ngIf="lastCommand" class="last-command">| "{{ lastCommand }}"</span>
       </div> -->
+
+
+      <div class="christmas-wrapper">
+        <h5 class="christmas-text">
+          <span class="christmas-text-word" style="--i:1">გისურვებთ</span>
+          <span class="christmas-text-word" style="--i:2">ბედნიერ</span>
+          <span class="christmas-text-word" style="--i:3">შობა</span>
+          <span class="christmas-text-word" style="--i:4">ახალ</span>
+          <span class="christmas-text-word" style="--i:5">წელს</span>
+          <span class="christmas-text-word hurt" style="--i:6">♥</span>
+          <span class="christmas-text-word hurt" style="--i:7">♥</span>
+          <span class="christmas-text-word hurt" style="--i:8">♥</span>
+        </h5>
+      </div>
+
+
+
+      <!-- 
+      <img class="christmas-hand-wave-penguin" src="assets/gif/merry-christmas-penguin.gif"> -->
+
+
+      <img src="assets/gif/santa-deer.gif" class="santa-deer">
 
 
       <div class="weather-widget">
@@ -72,7 +84,7 @@
           <div class="weather-card" *ngFor="let weather of weatherList; trackBy: trackByWeatherTimestamp">
 
             <div class="weather-row">
-              <span class="weather-icon">🌡️</span>
+              <span class="weather-icon"><i class="fa-solid fa-temperature-low" style="color: #d9d9d9;"></i></span>
               <span class="weather-value">{{ weather.temperature }}°C</span>
             </div>
 
@@ -114,7 +126,8 @@
       <!-- 🌡️ Temperature + Humidity (right side) -->
       <div class="d-flex justify-content-center gap-3 flex-wrap">
 
-        <img class="christmas-candy" src="assets/images/christmas-socks.png">
+        <img class="christmas-candy" src="assets/images/christmas-socks2.png">
+        <img class="christmas-happy-holidays" src="assets/gif/merry-christmas-happy-holidays.gif">
 
         <i class="fa-solid fa-bell fa-shake bell-temp-icon" *ngIf="isHot" style="color: #deeb1e;"></i>
 
@@ -137,7 +150,7 @@
   </div>
 
   <!-- christmas-tree -->
-  <img class="christmas-tree" src="assets/images/christmas-tree.png" alt="christmas-tree">
+  <img class="christmas-tree" src="assets/gif/feliz-natal-papai-noel.gif" alt="christmas-tree">
 
 
 
@@ -177,8 +190,7 @@
         <hr class="border-light line" />
 
         <div class="col p-0 " *ngFor="let ch of channels; trackBy: trackByOrder">
-          <div class="badge text-center channel-pill" (click)="onChannelHover(ch.ChanellName, $event)"
-            (mouseleave)="onMouseLeave()" [ngClass]="{
+          <div class="badge text-center channel-pill" (click)="onChannelHover(ch.ChanellName, $event)" [ngClass]="{
             'natia-error pulse-error': ch.HaveError,
             'natia-test text-light opacity-50': ch.IsDIsable && !ch.HaveError,
             'natia-success': !ch.IsDIsable && !ch.HaveError
@@ -226,7 +238,7 @@
   <div *ngIf="robotSpeech" class="text-center mt-4 robot-container">
     <!-- <i class="fa-solid fa-message fa-bounce bell-icon"></i> -->
     <img class="bell-icon" src="assets/images/envelope.png">
-    <h5 class="p-3 rounded-3 d-inline-block">
+    <h5 class="p-3 rounded-3 d-inline-block robot-text">
       <img class="robot-img" src="assets/gif/sports-sportsmanias.gif" alt="happy-robot" width="100" height="100">
       {{ robotSpeech }}
     </h5>
@@ -315,7 +327,7 @@
           <div class="bus-destination">{{ bus.headsign }}</div>
           <div class="bus-arrival">{{ bus.realtimeArrivalMinutes }} min</div>
         </div>
-        <div class="bus-card"><i class="fa-solid fa-bus" style="color: #f2f2f2;"></i></div>
+        <div class="bus-card"><img class="fa-bus" src="assets/gif/bus-pass-public.gif"></div>
       </div>
 
       <!-- Empty state -->

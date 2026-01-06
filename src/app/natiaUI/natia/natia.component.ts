@@ -355,8 +355,15 @@ export class NatiaComponent implements OnInit {
   }
 
 
-  onMouseLeave() {
-    this.hoverHtml = null;
+  //on click removes chanels details hover
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: Event) {
+    const tooltip = document.querySelector('.hover-tooltip-future');
+
+    // hide only if click is OUTSIDE tooltip
+    if (tooltip && !tooltip.contains(event.target as Node)) {
+      this.hoverHtml = null;
+    }
   }
 
   //signaler

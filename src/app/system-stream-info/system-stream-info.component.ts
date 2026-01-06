@@ -24,7 +24,7 @@ export class SystemStreamInfoComponent {
   error = '';
 
   page = 1;
-  pageSize = 2; // number of streams per page
+  pageSize = 1; // number of streams per page
 
 
   //voice command prop system stream
@@ -52,76 +52,77 @@ export class SystemStreamInfoComponent {
       }
     });
 
-    this.startVoice()
+    // //voice command
+    // this.startVoice()
 
   }
 
 
-  // ---------------- Voice Command ----------------
-  initVoice() {
-    const SpeechRecognition = (window as any).SpeechRecognition || webkitSpeechRecognition;
-    this.recognition = new SpeechRecognition();
-    this.recognition.lang = "ka-GE"; // Georgian
-    this.recognition.continuous = true;
-    this.recognition.interimResults = false;
+  // // ---------------- Voice Command ----------------
+  // initVoice() {
+  //   const SpeechRecognition = (window as any).SpeechRecognition || webkitSpeechRecognition;
+  //   this.recognition = new SpeechRecognition();
+  //   this.recognition.lang = "ka-GE"; // Georgian
+  //   this.recognition.continuous = true;
+  //   this.recognition.interimResults = false;
 
-    this.recognition.onresult = (event: any) => {
-      const text = event.results[event.results.length - 1][0].transcript.trim();
-      this.lastCommand = text;
-      this.handleCommand(text);
-    };
+  //   this.recognition.onresult = (event: any) => {
+  //     const text = event.results[event.results.length - 1][0].transcript.trim();
+  //     this.lastCommand = text;
+  //     this.handleCommand(text);
+  //   };
 
-    this.recognition.onend = () => {
-      if (this.isListening) this.recognition.start(); // Auto resume
-    };
-  }
+  //   this.recognition.onend = () => {
+  //     if (this.isListening) this.recognition.start(); // Auto resume
+  //   };
+  // }
 
-  startVoice() {
-    if (this.isListening) return;
-    this.initVoice();
-    this.recognition.start();
-    this.isListening = true;
-    this.status = "Listening...";
-  }
+  // startVoice() {
+  //   if (this.isListening) return;
+  //   this.initVoice();
+  //   this.recognition.start();
+  //   this.isListening = true;
+  //   this.status = "Listening...";
+  // }
 
-  stopVoice() {
-    if (!this.isListening) return;
-    this.recognition.stop();
-    this.isListening = false;
-    this.status = "Stopped";
-  }
+  // stopVoice() {
+  //   if (!this.isListening) return;
+  //   this.recognition.stop();
+  //   this.isListening = false;
+  //   this.status = "Stopped";
+  // }
 
-  // Handle voice commands
-  handleCommand(text: string) {
-    text = text.toLowerCase();
+  // // Handle voice commands
+  // handleCommand(text: string) {
+  //   text = text.toLowerCase();
 
-    if (text.includes("შემდეგი") || text.includes("შემდეგი გვერდი") || text.includes("წინ")) {
-      this.nextPage();
-    }
+  //   if (text.includes("შემდეგი") || text.includes("შემდეგი გვერდი") || text.includes("წინ")) {
+  //     this.nextPage();
+  //   }
 
-    if (text.includes("უკან") || text.includes("წინა გვერდი")) {
-      this.prevPage();
-    }
+  //   if (text.includes("უკან") || text.includes("წინა გვერდი")) {
+  //     this.prevPage();
+  //   }
 
-    if (text.includes("მთავარი გვერდი") || text.includes("ნათიას გვერდი") || text.includes("მთავარი")) {
-      this.goHome();
-    }
+  //   if (text.includes("მთავარი გვერდი") || text.includes("ნათიას გვერდი") || text.includes("მთავარი")) {
+  //     this.goHome();
+  //   }
 
 
-    // if (cmd.includes("სტოპ")) {
-    //   this.stopVoice();
-    // }
+  //   // if (cmd.includes("სტოპ")) {
+  //   //   this.stopVoice();
+  //   // }
 
-    // if (cmd.includes('ჩაირთე')) {
-    //   this.startVoice();
+  //   // if (cmd.includes('ჩაირთე')) {
+  //   //   this.startVoice();
 
-    // }
-  }
+  //   // }
+  // }
 
-  goHome() {
-    this.stopVoice();
-    this.router.navigate(['/']); // Angular Router navigation
-  }
+  // goHome() {
+  //   this.stopVoice();
+  //   this.router.navigate(['/']); // Angular Router navigation
+  // }
 
 
   updatePage(): void {

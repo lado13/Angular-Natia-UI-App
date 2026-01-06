@@ -61,6 +61,16 @@ body {
   border: none !important;
 }
 
+.day-theme .christmas-tree {
+  position: absolute;
+  bottom: 118px !important;
+}
+
+.day-theme .present {
+  position: absolute;
+  bottom: 156px !important;
+}
+
 .day-theme .card-header {
   background-color: transparent !important;
 }

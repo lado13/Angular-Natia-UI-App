@@ -1,10 +1,10 @@
 <div class="container-fluid p-4">
 
   <!-- Voice Status -->
-  <div class="voice-status">
+  <!-- <div class="voice-status">
     <i class="fa-solid fa-microphone"></i> <strong>{{ status }}</strong>
     <span *ngIf="lastCommand" class="last-command">| "{{ lastCommand }}"</span>
-  </div>
+  </div> -->
 
   <!-- Loading / Error -->
   <div *ngIf="loading" class="alert alert-info text-center py-2">
@@ -28,7 +28,7 @@
         </div>
 
         <div class="row g-2">
-          <div *ngFor="let program of streamInfo?.programs; trackBy: trackByProgramId" class="col">
+          <div *ngFor="let program of streamInfo?.programs; trackBy: trackByProgramId" class="col inner-container">
 
             <div class="program-card">
 
