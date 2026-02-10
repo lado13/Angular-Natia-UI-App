@@ -274,7 +274,7 @@
     width: 200px;
     height: 200px;
     position: absolute;
-    top: -187px;
+    top: -173px;
     left: -61px;
     // border-radius: 50%;
     animation: float 2s ease-in-out infinite;
@@ -347,6 +347,40 @@
         padding: 5px;
     }
 
+    .channel-table-wrapper {
+        max-height: 170px;
+        overflow-y: auto;
+        padding-right: 6px;
+        cursor: pointer;
+
+        /* Firefox */
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.05);
+    }
+
+    /* Chrome, Edge, Safari */
+    .channel-table-wrapper::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .channel-table-wrapper::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 10px;
+    }
+
+    .channel-table-wrapper::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 10px;
+        transition: background 0.2s ease;
+    }
+
+    .channel-table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: rgba(255, 255, 255, 0.45);
+    }
+
+
+
+
     .transparent-table {
         background-color: rgb(44 46 51 / 58%);
         color: #fff !important;
@@ -384,11 +418,12 @@
 //card Info To Activate
 .cards-container {
     padding: 8px;
-    background: #3a77632a;
-    border-radius: 6px;
+    background: rgb(31 39 58 / 51%);
+    // border-radius: 6px;
     max-width: 450px;
     font-family: Arial, sans-serif;
     width: 270px !important;
+    margin-right: 7px;
 
     .cards-container h4 {
         margin: 0 0 6px;
@@ -444,12 +479,12 @@
     }
 
     .tiny-badge {
-        font-size: 10px;
+        font-size: 14px;
         padding: 0.2rem 0.35rem;
     }
 
     .region-relay {
-        width: 60px;
+        width: auto;
         text-align: center;
 
         .fit-cell {
@@ -469,7 +504,7 @@
 .emr-temperature-section {
     font-family: "content-font", sans-serif;
     position: absolute;
-    left: 260px;
+    left: 302px;
 
     .emr-temp-background {
         background-color: #2125298f;
@@ -683,9 +718,9 @@
     display: inline-block;
     transform-origin: center;
     position: absolute;
-    right: -36px;
-    top: -115px;
-    color: tomato;
+    right: -68px;
+    top: -56px;
+    // color: tomato;
     width: 127px;
 }
 
@@ -703,229 +738,229 @@
 }
 
 // //watch
-// .classic-watch {
-//     font-size: 1.25rem;
-//     font-weight: 600;
-//     padding: 6px 18px;
-
-//     color: #e9ecef;
-//     letter-spacing: 1.8px;
-//     text-transform: uppercase;
-
-//     /* Deep glass-metal gradient */
-//     background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
-//     border-radius: 14px;
-//     border: 1px solid rgba(255, 255, 255, 0.2);
-
-//     display: inline-flex;
-//     align-items: center;
-//     justify-content: center;
-//     position: relative;
-//     overflow: hidden;
-
-//     /* Soft premium glow */
-//     box-shadow:
-//         0 4px 14px rgba(0, 0, 0, 0.55),
-//         inset 0 0 25px rgba(255, 255, 255, 0.04),
-//         0 0 12px rgba(45, 130, 255, 0.25);
-
-//     transition: 0.35s ease-in-out;
-// }
-
-// /* Shine layer sweeping animation */
-// .classic-watch::before {
-//     content: "";
-//     position: absolute;
-//     top: 0;
-//     left: -150%;
-//     width: 150%;
-//     height: 100%;
-//     background: linear-gradient(120deg,
-//             transparent 0%,
-//             rgba(255, 255, 255, 0.18) 50%,
-//             transparent 100%);
-//     transform: skewX(-25deg);
-//     transition: 0.6s;
-// }
-
-// .classic-watch:hover::before {
-//     left: 150%;
-// }
-
-// /* Neon edge glow + lift */
-// .classic-watch:hover {
-//     box-shadow:
-//         0 6px 18px rgba(0, 0, 0, 0.65),
-//         inset 0 0 35px rgba(255, 255, 255, 0.06),
-//         0 0 16px rgba(0, 174, 255, 0.6),
-//         0 0 35px rgba(0, 174, 255, 0.3);
-//     transform: translateY(-3px) scale(1.03);
-//     border-color: rgba(0, 174, 255, 0.45);
-// }
-
-// /* Subtle inner pulse animation */
-// .classic-watch::after {
-//     content: "";
-//     position: absolute;
-//     inset: 0;
-//     border-radius: inherit;
-//     box-shadow: inset 0 0 15px rgba(0, 174, 255, 0.15);
-//     animation: pulseGlow 3s ease-in-out infinite;
-// }
-
-// @keyframes pulseGlow {
-//     0% {
-//         box-shadow: inset 0 0 10px rgba(0, 174, 255, 0.10);
-//     }
-
-//     50% {
-//         box-shadow: inset 0 0 20px rgba(0, 174, 255, 0.25);
-//     }
-
-//     100% {
-//         box-shadow: inset 0 0 10px rgba(0, 174, 255, 0.10);
-//     }
-// }
-
-
-// .classic-watch i {
-//     color: #ffc107;
-// }
-
-/* 🎄 CHRISTMAS EDITION */
-.classic-watch.christmas {
+.classic-watch {
     font-size: 1.25rem;
     font-weight: 600;
-    padding: 6px 20px;
-    letter-spacing: 2px;
-    color: #fffaf0;
+    padding: 6px 18px;
+
+    color: #e9ecef;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
 
-    background: linear-gradient(145deg,
-            #7a1414,
-            #b91c1c 35%,
-            #14532d);
-
-    border-radius: 16px;
-    border: 1px solid rgba(255, 215, 0, 0.45);
+    /* Deep glass-metal gradient */
+    background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
 
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-
+    justify-content: center;
     position: relative;
     overflow: hidden;
 
+    /* Soft premium glow */
     box-shadow:
-        0 6px 20px rgba(0, 0, 0, 0.6),
-        inset 0 0 30px rgba(255, 255, 255, 0.06),
-        0 0 18px rgba(255, 215, 0, 0.35);
+        0 4px 14px rgba(0, 0, 0, 0.55),
+        inset 0 0 25px rgba(255, 255, 255, 0.04),
+        0 0 12px rgba(45, 130, 255, 0.25);
 
-    animation: christmasPulse 2.8s ease-in-out infinite;
+    transition: 0.35s ease-in-out;
 }
 
-/* ✨ Gold shine sweep */
-.classic-watch.christmas::before {
+/* Shine layer sweeping animation */
+.classic-watch::before {
     content: "";
     position: absolute;
     top: 0;
-    left: -160%;
-    width: 160%;
+    left: -150%;
+    width: 150%;
     height: 100%;
     background: linear-gradient(120deg,
-            transparent,
-            rgba(255, 215, 0, 0.35),
-            transparent);
+            transparent 0%,
+            rgba(255, 255, 255, 0.18) 50%,
+            transparent 100%);
     transform: skewX(-25deg);
-    animation: shineMove 4s linear infinite;
+    transition: 0.6s;
 }
 
-/* ❄️ Snow sparkle layer */
-.classic-watch.christmas::after {
+.classic-watch:hover::before {
+    left: 150%;
+}
+
+/* Neon edge glow + lift */
+.classic-watch:hover {
+    box-shadow:
+        0 6px 18px rgba(0, 0, 0, 0.65),
+        inset 0 0 35px rgba(255, 255, 255, 0.06),
+        0 0 16px rgba(0, 174, 255, 0.6),
+        0 0 35px rgba(0, 174, 255, 0.3);
+    transform: translateY(-3px) scale(1.03);
+    border-color: rgba(0, 174, 255, 0.45);
+}
+
+/* Subtle inner pulse animation */
+.classic-watch::after {
     content: "";
     position: absolute;
     inset: 0;
-    background:
-        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, .35) 2px, transparent 3px),
-        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, .25) 1.5px, transparent 3px),
-        radial-gradient(circle at 40% 80%, rgba(255, 255, 255, .3) 2px, transparent 3px);
-    opacity: 0.45;
-    animation: snowTwinkle 3s ease-in-out infinite;
+    border-radius: inherit;
+    box-shadow: inset 0 0 15px rgba(0, 174, 255, 0.15);
+    animation: pulseGlow 3s ease-in-out infinite;
 }
 
-/* 🎅 Hover festive glow */
-.classic-watch.christmas:hover {
-    transform: translateY(-3px) scale(1.05);
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.75),
-        0 0 25px rgba(255, 215, 0, 0.6),
-        0 0 45px rgba(220, 38, 38, 0.6);
-}
-
-/* 🎁 Icon styling */
-.classic-watch.christmas i {
-    color: #ffd700;
-    animation: bellRing 1.5s ease-in-out infinite;
-}
-
-/* 🎄 Animations */
-@keyframes christmasPulse {
+@keyframes pulseGlow {
     0% {
-        box-shadow: 0 0 14px rgba(255, 215, 0, .35);
+        box-shadow: inset 0 0 10px rgba(0, 174, 255, 0.10);
     }
 
     50% {
-        box-shadow: 0 0 28px rgba(34, 197, 94, .6);
+        box-shadow: inset 0 0 20px rgba(0, 174, 255, 0.25);
     }
 
     100% {
-        box-shadow: 0 0 14px rgba(255, 215, 0, .35);
+        box-shadow: inset 0 0 10px rgba(0, 174, 255, 0.10);
     }
 }
 
-@keyframes shineMove {
-    0% {
-        left: -160%;
-    }
 
-    100% {
-        left: 160%;
-    }
+.classic-watch i {
+    color: #ffc107;
 }
 
-@keyframes snowTwinkle {
+/* 🎄 CHRISTMAS EDITION */
+// .classic-watch.christmas {
+//     font-size: 1.25rem;
+//     font-weight: 600;
+//     padding: 6px 20px;
+//     letter-spacing: 2px;
+//     color: #fffaf0;
+//     text-transform: uppercase;
 
-    0%,
-    100% {
-        opacity: .35;
-    }
+//     background: linear-gradient(145deg,
+//             #7a1414,
+//             #b91c1c 35%,
+//             #14532d);
 
-    50% {
-        opacity: .7;
-    }
-}
+//     border-radius: 16px;
+//     border: 1px solid rgba(255, 215, 0, 0.45);
 
-@keyframes bellRing {
-    0% {
-        transform: rotate(0deg);
-    }
+//     display: inline-flex;
+//     align-items: center;
+//     gap: 8px;
 
-    25% {
-        transform: rotate(10deg);
-    }
+//     position: relative;
+//     overflow: hidden;
 
-    50% {
-        transform: rotate(-10deg);
-    }
+//     box-shadow:
+//         0 6px 20px rgba(0, 0, 0, 0.6),
+//         inset 0 0 30px rgba(255, 255, 255, 0.06),
+//         0 0 18px rgba(255, 215, 0, 0.35);
 
-    75% {
-        transform: rotate(6deg);
-    }
+//     animation: christmasPulse 2.8s ease-in-out infinite;
+// }
 
-    100% {
-        transform: rotate(0deg);
-    }
-}
+// /* ✨ Gold shine sweep */
+// .classic-watch.christmas::before {
+//     content: "";
+//     position: absolute;
+//     top: 0;
+//     left: -160%;
+//     width: 160%;
+//     height: 100%;
+//     background: linear-gradient(120deg,
+//             transparent,
+//             rgba(255, 215, 0, 0.35),
+//             transparent);
+//     transform: skewX(-25deg);
+//     animation: shineMove 4s linear infinite;
+// }
+
+// /* ❄️ Snow sparkle layer */
+// .classic-watch.christmas::after {
+//     content: "";
+//     position: absolute;
+//     inset: 0;
+//     background:
+//         radial-gradient(circle at 20% 30%, rgba(255, 255, 255, .35) 2px, transparent 3px),
+//         radial-gradient(circle at 70% 60%, rgba(255, 255, 255, .25) 1.5px, transparent 3px),
+//         radial-gradient(circle at 40% 80%, rgba(255, 255, 255, .3) 2px, transparent 3px);
+//     opacity: 0.45;
+//     animation: snowTwinkle 3s ease-in-out infinite;
+// }
+
+// /* 🎅 Hover festive glow */
+// .classic-watch.christmas:hover {
+//     transform: translateY(-3px) scale(1.05);
+//     box-shadow:
+//         0 10px 30px rgba(0, 0, 0, 0.75),
+//         0 0 25px rgba(255, 215, 0, 0.6),
+//         0 0 45px rgba(220, 38, 38, 0.6);
+// }
+
+// /* 🎁 Icon styling */
+// .classic-watch.christmas i {
+//     color: #ffd700;
+//     animation: bellRing 1.5s ease-in-out infinite;
+// }
+
+// /* 🎄 Animations */
+// @keyframes christmasPulse {
+//     0% {
+//         box-shadow: 0 0 14px rgba(255, 215, 0, .35);
+//     }
+
+//     50% {
+//         box-shadow: 0 0 28px rgba(34, 197, 94, .6);
+//     }
+
+//     100% {
+//         box-shadow: 0 0 14px rgba(255, 215, 0, .35);
+//     }
+// }
+
+// @keyframes shineMove {
+//     0% {
+//         left: -160%;
+//     }
+
+//     100% {
+//         left: 160%;
+//     }
+// }
+
+// @keyframes snowTwinkle {
+
+//     0%,
+//     100% {
+//         opacity: .35;
+//     }
+
+//     50% {
+//         opacity: .7;
+//     }
+// }
+
+// @keyframes bellRing {
+//     0% {
+//         transform: rotate(0deg);
+//     }
+
+//     25% {
+//         transform: rotate(10deg);
+//     }
+
+//     50% {
+//         transform: rotate(-10deg);
+//     }
+
+//     75% {
+//         transform: rotate(6deg);
+//     }
+
+//     100% {
+//         transform: rotate(0deg);
+//     }
+// }
 
 
 
@@ -1209,12 +1244,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     font-size: 12px;
     color: #fff;
-    padding: 10px;
+    padding: 12px 0px 0px 0px;
     position: absolute;
     top: 49px;
+    left: -13px;
 }
 
 .loading,
@@ -1227,10 +1263,11 @@
 /* Horizontal scroll container */
 .bus-cards {
     display: flex;
-    gap: 10px;
+    gap: 4px;
     overflow-x: auto;
     padding-bottom: 4px;
     scrollbar-width: thin;
+    height: 107px;
 
     .fa-bus {
         width: 100px;
@@ -1267,6 +1304,7 @@
     text-align: center;
     transition: transform 0.2s ease, background 0.2s ease;
     cursor: default;
+    width: 134px;
 }
 
 .bus-card:hover {

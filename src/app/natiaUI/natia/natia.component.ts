@@ -523,12 +523,12 @@ export class NatiaComponent implements OnInit {
   // -------------------- Disco animation mapping --------------------
   private setAnimation(message: string): void {
     switch (message) {
-      case 'Morning': this.currentAnimation = 'assets/gif/christmas-dancing.gif'; break;
+      case 'Morning': this.currentAnimation = 'assets/gif/morning.gif'; break;
       case 'Evening': this.currentAnimation = 'assets/gif/evening.gif'; break;
       case 'Night': this.currentAnimation = 'assets/gif/night.gif'; break;
       case 'Afternoon': this.currentAnimation = 'assets/gif/afternoon.gif'; break;
       case 'birthday': this.currentAnimation = 'assets/gif/birthday.gif'; break;
-      case 'NatiasCpuOverload': this.currentAnimation = 'assets/gif/grinch-clap.gif'; break;
+      case 'NatiasCpuOverload': this.currentAnimation = 'assets/gif/overthinking-problem.gif'; break;
       case 'NatiasRamOverload': this.currentAnimation = 'assets/gif/cpu.gif'; break;
       case 'TemperatureProblem': this.currentAnimation = 'assets/gif/temperature.gif'; break;
       default: this.currentAnimation = '/animations/default.gif'; break;
