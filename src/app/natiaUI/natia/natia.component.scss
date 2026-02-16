@@ -483,6 +483,11 @@
         padding: 0.2rem 0.35rem;
     }
 
+    .tiny-badge-title {
+        background-color: #2d3249;
+        color: #ffffff !important;
+    }
+
     .region-relay {
         width: auto;
         text-align: center;
@@ -1225,7 +1230,7 @@
     max-width: 450px;
     position: absolute;
     right: 349px;
-    top: 34px;
+    top: 25px;
     padding: 9px;
     border: 1px solid rgba(255, 255, 255, 0.2);
 
@@ -1304,7 +1309,7 @@
     text-align: center;
     transition: transform 0.2s ease, background 0.2s ease;
     cursor: default;
-    width: 134px;
+    width: 132px;
 }
 
 .bus-card:hover {

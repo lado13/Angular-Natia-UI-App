@@ -236,8 +236,8 @@ export class SignalRService {
         const mappedData: WeatherUpdate[] = dataArray.map(item => ({
           temperature: item.Temperature ?? item.temperature ?? 0,
           wind: item.Wind ?? item.wind ?? 0,
-          snow: item.Snow ?? 'No Snow',
-          rain: item.Rain ?? 'No Rain',
+          snow: item.Snow ?? item.snow ??'No Snow',
+          rain: item.Rain ?? item.rain ??'No Rain',
           timestamp: new Date().toISOString(),
           location: item.Location ?? item.location ?? ''
         }));

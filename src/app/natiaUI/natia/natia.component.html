@@ -266,14 +266,14 @@
             <h6 class="card-title  m-0">{{ region.regionName }}</h6>
 
             <!-- RelayInfos badges -->
-            <div *ngFor="let info of region.relayInfos; trackBy: trackByRelayInfo" class="regionrelay-mer">
-              <span class="tiny-badge">{{ info.frequecyOrder }}</span>
-
-              <span class="tiny-badge" [ngClass]="{
+            <div *ngFor="let info of region.relayInfos; trackBy: trackByRelayInfo" class="regionrelay-mer" [ngClass]="{
                     'natia-temp-error': info.isHaveProblem,
                     'natia-warn': !info.isHaveProblem && info.isWarning,
                     'natia-success': !info.isHaveProblem && !info.isWarning
                              }">
+              <span class="tiny-badge tiny-badge-title">{{ info.frequecyOrder }}</span>
+
+              <span class="tiny-badge">
                 {{ info.mer }}
               </span>
 
