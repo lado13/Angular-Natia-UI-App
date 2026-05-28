@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1536" height="426" viewBox="0 0 1536 426" preserveAspectRatio="xMidYMid">
+
+  <!-- 🌌 Background Gradient Animation -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f2027">
+        <animate attributeName="stop-color" values="#0f2027;#203a43;#2c5364;#0f2027" dur="10s" repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#2c5364">
+        <animate attributeName="stop-color" values="#2c5364;#0f2027;#203a43;#2c5364" dur="10s" repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <!-- 🌊 Wave Gradient -->
+    <linearGradient id="waveGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00fff0"/>
+      <stop offset="100%" stop-color="#0040ff"/>
+    </linearGradient>
+
+    <!-- ✨ Glow Effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="100%" height="100%" fill="url(#bgGradient)" />
+
+  <!-- 🌊 Waves -->
+  <g filter="url(#glow)">
+    
+    <!-- Wave 1 -->
+    <path fill="url(#waveGradient)">
+      <animate attributeName="d" dur="12s" repeatCount="indefinite"
+        values="
+        M0 250 Q300 230 600 250 T1200 250 T1536 250 L1536 426 L0 426 Z;
+        M0 260 Q300 280 600 260 T1200 260 T1536 260 L1536 426 L0 426 Z;
+        M0 250 Q300 230 600 250 T1200 250 T1536 250 L1536 426 L0 426 Z"
+        calcMode="spline"
+        keySplines="0.42 0 0.58 1;0.42 0 0.58 1"/>
+    </path>
+
+    <!-- Wave 2 -->
+    <path fill="url(#waveGradient)" opacity="0.7">
+      <animate attributeName="d" dur="10s" repeatCount="indefinite"
+        values="
+        M0 270 Q300 250 600 270 T1200 270 T1536 270 L1536 426 L0 426 Z;
+        M0 260 Q300 290 600 260 T1200 260 T1536 260 L1536 426 L0 426 Z;
+        M0 270 Q300 250 600 270 T1200 270 T1536 270 L1536 426 L0 426 Z"
+        calcMode="spline"
+        keySplines="0.42 0 0.58 1;0.42 0 0.58 1"/>
+    </path>
+
+    <!-- Wave 3 -->
+    <path fill="url(#waveGradient)" opacity="0.4">
+      <animate attributeName="d" dur="8s" repeatCount="indefinite"
+        values="
+        M0 290 Q300 270 600 290 T1200 290 T1536 290 L1536 426 L0 426 Z;
+        M0 280 Q300 310 600 280 T1200 280 T1536 280 L1536 426 L0 426 Z;
+        M0 290 Q300 270 600 290 T1200 290 T1536 290 L1536 426 L0 426 Z"
+        calcMode="spline"
+        keySplines="0.42 0 0.58 1;0.42 0 0.58 1"/>
+    </path>
+
+  </g>
+
+  <!-- ✨ Floating Particles -->
+  <g fill="white" opacity="0.6">
+    
+    <circle cx="200" cy="300" r="2">
+      <animate attributeName="cy" values="300;0" dur="6s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="600" cy="350" r="2">
+      <animate attributeName="cy" values="350;0" dur="7s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="1000" cy="320" r="2">
+      <animate attributeName="cy" values="320;0" dur="5s" repeatCount="indefinite"/>
+    </circle>
+
+    <circle cx="1400" cy="370" r="2">
+      <animate attributeName="cy" values="370;0" dur="8s" repeatCount="indefinite"/>
+    </circle>
+
+  </g>
+
+</svg>

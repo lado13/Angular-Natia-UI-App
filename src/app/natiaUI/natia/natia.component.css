@@ -40,7 +40,6 @@
   }
 }
 .chanells-container .channel-pill {
-  font-family: "content-font", sans-serif;
   padding: 0.6rem 0.75rem;
   font-size: 0.9rem;
   white-space: nowrap;
@@ -79,7 +78,6 @@
   /* Text & font */
   color: #d1d1d1;
   font-size: 15px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.3rem;
   /* Shadow & glow */
   box-shadow: 0 0 15px rgba(202, 202, 202, 0.3), 0 0 25px rgba(255, 255, 255, 0.2);
@@ -134,7 +132,6 @@
 }
 
 .satellite-container {
-  font-family: "content-font", sans-serif;
   border: none;
   margin: 0;
 }
@@ -156,6 +153,10 @@
 }
 .satellite-container .satellite-box .satellite-card .symbolRate {
   background-color: #393d41;
+}
+.satellite-container .satellite-box .satellite-card .card-body {
+  font-weight: bolder;
+  font-size: 18px;
 }
 .satellite-container .satellite-box .satellite-card .card-body .satellite-value {
   width: -webkit-fill-available;
@@ -184,13 +185,82 @@
   font-size: 16px;
 }
 
+.temperature-info-container .hided-stream {
+  font-family: "robot-text", sans-serif;
+  margin: 0;
+  color: white;
+  position: absolute;
+  left: 66px;
+  top: 12px;
+  z-index: 999;
+}
 .temperature-info-container .temp {
   border-radius: 6px;
-  background-color: #3a504d;
+  background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 .temperature-info-container .humidity {
-  background-color: #405852;
+  background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
+  animation: pulseGlow 3s ease-in-out infinite;
   border-radius: 6px;
+}
+.temperature-info-container .enginer-info-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 5px;
+}
+.temperature-info-container .enginer-info-container .enginer-info {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #2a2a3d;
+  padding: 6px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  width: 104px;
+  height: 42px;
+}
+.temperature-info-container .enginer-info-container .enginer-info:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+}
+.temperature-info-container .enginer-info-container .enginer-info .enginer-image {
+  position: absolute;
+  left: -8px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  border: 3px solid #00ffc1;
+  margin-bottom: 4px;
+}
+.temperature-info-container .enginer-info-container .enginer-info .enginer-name {
+  color: #fff;
+  font-size: 13px;
+  font-weight: bolder;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  top: 1px;
+  left: 14px;
+  position: absolute;
+  font-family: "robot-text";
+}
+.temperature-info-container .enginer-info-container .enginer-info .status-dot {
+  position: absolute;
+  bottom: 4px;
+  right: 7px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: #00ff87;
+  border: 1px solid #2a2a3d;
 }
 
 .robot-container {
@@ -200,19 +270,17 @@
   transform: translateX(-50%);
   z-index: 999999999999;
   max-width: 500px;
-  animation: waveContainer 3s ease-in-out infinite;
 }
 .robot-container .robot-text {
   font-family: "robot-text", sans-serif;
 }
 
 .robot-img {
-  width: 200px;
-  height: 200px;
+  width: 735px;
+  height: 450px;
   position: absolute;
-  top: -173px;
-  left: -61px;
-  animation: float 2s ease-in-out infinite;
+  top: -436px;
+  left: -349px;
 }
 
 /* Container floating wave */
@@ -251,17 +319,21 @@
 }
 
 .problem-container {
-  font-family: "content-font", sans-serif;
   position: absolute;
   width: -moz-fit-content;
   width: fit-content;
   right: 14px;
   z-index: 9999999;
-  /* Chrome, Edge, Safari */
+}
+.problem-container .problem-channels {
+  position: absolute;
+  right: 404px;
 }
 .problem-container .channel-problem-title {
-  background-color: #16293b;
+  animation: pulseGlow 3s ease-in-out infinite;
+  background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
   padding: 5px;
+  font-family: "robot-text", sans-serif;
 }
 .problem-container .channel-table-wrapper {
   max-height: 170px;
@@ -271,6 +343,9 @@
   /* Firefox */
   scrollbar-width: thin;
   scrollbar-color: rgba(255, 255, 255, 0.35) rgba(255, 255, 255, 0.05);
+}
+.problem-container {
+  /* Chrome, Edge, Safari */
 }
 .problem-container .channel-table-wrapper::-webkit-scrollbar {
   width: 6px;
@@ -314,12 +389,16 @@
 }
 
 .cards-container {
+  position: absolute;
+  left: 542px;
+  top: 0px;
   padding: 8px;
   background: rgba(31, 39, 58, 0.51);
   max-width: 450px;
   font-family: Arial, sans-serif;
   width: 270px !important;
   margin-right: 7px;
+  font-family: "robot-text";
 }
 .cards-container .cards-container h4 {
   margin: 0 0 6px;
@@ -371,7 +450,7 @@
   color: #ffffff !important;
 }
 .region-relay-section .region-relay {
-  width: auto;
+  width: 76px;
   text-align: center;
 }
 .region-relay-section .region-relay .fit-cell {
@@ -382,9 +461,8 @@
 }
 
 .emr-temperature-section {
-  font-family: "content-font", sans-serif;
   position: absolute;
-  left: 302px;
+  left: 307px;
 }
 .emr-temperature-section .emr-temp-background {
   background-color: rgba(33, 37, 41, 0.5607843137);
@@ -563,6 +641,7 @@
   position: absolute;
   right: -68px;
   top: -56px;
+  color: #1b242f;
   width: 127px;
 }
 
@@ -676,8 +755,7 @@
   left: 31%;
   border-radius: 18px;
   background: rgba(35, 32, 62, 0.48);
-  -webkit-backdrop-filter: blur(10px);
-          backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(255, 255, 255, 0.08);
 }
 
@@ -860,7 +938,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 2px 8px;
-  background-color: #3a504d;
+  background: linear-gradient(145deg, #1b242f, #2f3b4a 40%, #1c242e);
   color: white;
   border-radius: 5px;
   max-width: 450px;
@@ -869,6 +947,7 @@
   top: 25px;
   padding: 9px;
   border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: pulseGlow 3s ease-in-out infinite;
 }
 .weather-card .weather-row {
   padding-right: 10px;
@@ -882,20 +961,18 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   font-size: 12px;
   color: #fff;
   padding: 12px 0px 0px 0px;
   position: absolute;
   top: 49px;
-  left: -13px;
+  left: -12px;
 }
 
 .loading,
 .empty {
   text-align: center;
   opacity: 0.6;
-  font-style: italic;
 }
 
 /* Horizontal scroll container */
@@ -933,10 +1010,8 @@
   justify-content: center;
   min-width: 92px;
   padding: 5px 2px;
-  border-radius: 12px;
   background: rgba(0, 0, 0, 0.38);
-  -webkit-backdrop-filter: blur(6px);
-          backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
   text-align: center;
   transition: transform 0.2s ease, background 0.2s ease;
@@ -965,6 +1040,302 @@
 .bus-arrival {
   font-size: 12px;
   font-weight: 500;
+}
+
+.car-logo-container {
+  position: absolute;
+  left: 540px;
+  width: 740px;
+}
+.car-logo-container .logo {
+  cursor: pointer;
+}
+.car-logo-container .logo .logo-img {
+  width: 150px;
+  height: 115px;
+}
+.car-logo-container .logo .dimitri {
+  color: #ffffff;
+}
+
+/* Car wrapper - initially off-screen left */
+.car-wrapper {
+  position: absolute;
+  bottom: 50px;
+  left: -250px;
+  /* start off-screen */
+  display: flex;
+  align-items: flex-end;
+  z-index: 1;
+}
+
+/* When moving, apply keyframe animation */
+.car-wrapper.moving {
+  animation: moveCar 5s linear forwards;
+}
+
+/* Car image */
+.car {
+  width: 250px;
+  height: auto;
+  z-index: 2;
+}
+
+/* Smoke container behind car */
+.smoke-container {
+  position: absolute;
+  bottom: 10px;
+  /* adjust to wheel */
+  left: 0;
+  display: flex;
+  gap: 5px;
+  z-index: 0;
+}
+
+/* Smoke puff style - bright white */
+.smoke {
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, rgb(255, 255, 255) 0%, rgba(255, 255, 255, 0) 70%);
+  border-radius: 50%;
+  animation: smokeMove 1.5s linear infinite;
+  opacity: 0.8;
+}
+
+/* stagger smoke puffs */
+.smoke:nth-child(2) {
+  animation-delay: 0.3s;
+}
+
+.smoke:nth-child(3) {
+  animation-delay: 0.6s;
+}
+
+.smoke:nth-child(4) {
+  animation-delay: 0.9s;
+}
+
+.smoke:nth-child(5) {
+  animation-delay: 1.2s;
+}
+
+/* Car movement animation - goes from left to right and disappears */
+@keyframes moveCar {
+  0% {
+    left: -250px;
+  }
+  100% {
+    left: 110%;
+    /* move past screen right */
+    /* disappear smoothly */
+  }
+}
+/* Smoke animation - moves up and fades out */
+@keyframes smokeMove {
+  0% {
+    transform: translate(0, 0) scale(0.5);
+  }
+  50% {
+    transform: translate(-10px, -20px) scale(1);
+  }
+  100% {
+    transform: translate(-20px, -40px) scale(1.5);
+  }
+}
+.electricity-panel {
+  position: absolute;
+  left: 205px;
+  display: flex;
+  gap: 20px;
+}
+
+.power-box {
+  position: relative;
+  padding: 12px 20px;
+  border-radius: 6px;
+  color: rgb(0, 0, 0);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: bold;
+  font-family: "robot-text", sans-serif;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+}
+.power-box .electric-icon {
+  font-size: 24px;
+}
+
+/* ===== Active (supplying electricity) ===== */
+.power-active,
+.generator-active {
+  border: 1px solid #ffffff;
+  background: #4afff5;
+  box-shadow: 0 0 15px #00ff95;
+}
+
+/* ===== Inactive ===== */
+.power-inactive,
+.generator-inactive {
+  background: #444;
+  opacity: 0.6;
+}
+
+/* ===== Electric Flow Animation (Red Line) ===== */
+.electric-flow {
+  position: absolute;
+  left: -100%;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #00ff0d, transparent);
+  bottom: 0;
+  animation: electricMove 1.2s linear infinite;
+  display: none;
+  /* default hidden */
+  box-shadow: 0 0 8px #62ff4d, 0 0 15px #3cff00;
+}
+
+.power-active .electric-flow,
+.generator-active .electric-flow {
+  display: block !important;
+}
+
+@keyframes electricMove {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+.loading-state {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #888;
+  font-size: 12px;
+  padding: 10px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #333;
+  border-top: 2px solid #00ff00;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+.harmonic-container {
+  position: absolute;
+  top: -4px;
+  right: 45px;
+  display: flex;
+  flex-direction: column;
+  width: -moz-fit-content;
+  width: fit-content;
+  bottom: 185px;
+  padding: 4px;
+}
+
+.harmonic-title {
+  font-family: "robot-text";
+  margin: 0;
+  font-size: 13px;
+  font-weight: bold;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding-left: 2px;
+  background-color: rgba(27, 36, 47, 0.8784313725);
+  padding: 3px;
+}
+
+.harmonic {
+  display: grid;
+  grid-template-columns: repeat(3, 115px);
+  gap: 2px;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.sys-card-sm {
+  background: rgba(0, 0, 0, 0.6196078431);
+  border: 1px solid #333;
+  padding: 8px;
+  height: 73px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.indicator-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #00ff00;
+}
+
+.is-off .indicator-dot {
+  background: #ff4444;
+}
+
+.res-tag {
+  margin-left: auto;
+  background: #ffab00;
+  color: #000;
+  padding: 0 4px;
+  border-radius: 2px;
+}
+
+.sys-name-sm {
+  font-size: 12px;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sys-val {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+}
+
+.val-num {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.val-unit {
+  font-size: 9px;
+  color: #666;
+  text-transform: uppercase;
+}
+
+.txt-danger {
+  color: #ff4444 !important;
+}
+
+.is-alarm {
+  border-color: rgba(255, 0, 0, 0.5);
+  background: rgba(68, 6, 6, 0.59);
 }
 
 @media (max-width: 600px) {

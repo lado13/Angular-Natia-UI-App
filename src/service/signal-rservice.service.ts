@@ -12,6 +12,9 @@ import { DiscoMessage } from '../model/disco-message';
 import { EmrTemperature } from '../model/emr-temperature';
 import { WeatherUpdate } from '../model/weather-update';
 import { BusArrival } from '../model/bus-arrival';
+import { ElectricityInfo } from '../model/electricity-info';
+import { HarmonicSystem } from '../model/harmonic-system';
+import { EngineerOnShift } from '../model/engineer-on-shift';
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +58,16 @@ export class SignalRService {
 
   private busArrivalSubject = new BehaviorSubject<BusArrival[]>([]);
   busArrival$ = this.busArrivalSubject.asObservable();
+
+  private electricitySubject = new BehaviorSubject<ElectricityInfo[]>([]);
+  electricity$ = this.electricitySubject.asObservable();
+
+  private harmonicSubject = new BehaviorSubject<HarmonicSystem[]>([]);
+  harmonicInfo$ = this.harmonicSubject.asObservable();
+
+  private EngineerOnShiftSubject = new BehaviorSubject<EngineerOnShift[]>([]);
+  EngineerOnShiftInfo$ = this.EngineerOnShiftSubject.asObservable();
+
 
   //signaler connection start
   public async startConnection(): Promise<void> {
@@ -236,8 +249,8 @@ export class SignalRService {
         const mappedData: WeatherUpdate[] = dataArray.map(item => ({
           temperature: item.Temperature ?? item.temperature ?? 0,
           wind: item.Wind ?? item.wind ?? 0,
-          snow: item.Snow ?? item.snow ??'No Snow',
-          rain: item.Rain ?? item.rain ??'No Rain',
+          snow: item.Snow ?? item.snow ?? 'No Snow',
+          rain: item.Rain ?? item.rain ?? 'No Rain',
           timestamp: new Date().toISOString(),
           location: item.Location ?? item.location ?? ''
         }));
@@ -268,6 +281,75 @@ export class SignalRService {
       }
     });
 
+
+
+
+    // // ⚡ Electricity Info
+    this.hubConnection.on('electricityinfo', (data: any) => {
+
+      const dataArray = Array.isArray(data) ? data : [data];
+
+      if (dataArray.length > 0) {
+
+        const mappedData: ElectricityInfo[] = dataArray.map(item => ({
+          isGeneratorOn: item.isGeneratorOn ?? false,
+          isMainElectricityOn: item.isMainElectricityOn ?? false
+        }));
+
+        this.electricitySubject.next(mappedData);
+
+      } else {
+
+        console.warn('⚠️ Invalid or empty electricityinfo data, skipping:', data);
+        this.electricitySubject.next([]);
+
+      }
+
+    });
+
+    //harmonic info
+    this.hubConnection.on('harmonicinfo', (data: any) => {
+      const dataArray = Array.isArray(data) ? data : [data];
+
+      if (dataArray.length > 0) {
+        const mappedData: HarmonicSystem[] = dataArray.map(item => ({
+          harmonicName: item.harmonicName ?? 'Unknown',
+          isOn: item.isOn ?? false,
+          isReadyToGoReserve: item.isReadyToGoReserve ?? false,
+          alarmCounts: item.alarmCounts ?? 0
+        }));
+
+        this.harmonicSubject.next(mappedData);
+      } else {
+        console.warn('⚠️ Invalid or empty harmonicinfo data, skipping:', data);
+        this.harmonicSubject.next([]);
+      }
+
+      console.log("harmonicinfo updated:", data);
+    });
+
+
+    //enginnersonshift
+    this.hubConnection.on('enginnersonshift', (data: any) => {
+      const dataArray = Array.isArray(data) ? data : [data];
+
+      if (dataArray.length > 0) {
+
+        const mappedData: EngineerOnShift[] = dataArray.map(item => ({
+          name: item.nameOfEmployee ?? 'Unknown',
+          pictureUrl: item.pictureUrl ?? ''
+        }));
+
+        this.EngineerOnShiftSubject.next(mappedData);
+
+      } else {
+        console.warn('⚠️ Invalid or empty enginnersonshift data, skipping:', data);
+        this.EngineerOnShiftSubject.next([]);
+      }
+
+      console.log('enginnersonshift updated:', dataArray);
+      console.log('JSON:\n', JSON.stringify(dataArray, null, 2));
+    });
 
 
 

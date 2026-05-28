@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="liveGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff0066">
+        <animate attributeName="stop-color"
+                 values="#ff0066; #6a00ff; #00d4ff; #ff0066"
+                 dur="12s"
+                 repeatCount="indefinite"/>
+      </stop>
+      <stop offset="100%" stop-color="#00d4ff">
+        <animate attributeName="stop-color"
+                 values="#00d4ff; #ff0066; #6a00ff; #00d4ff"
+                 dur="12s"
+                 repeatCount="indefinite"/>
+      </stop>
+    </linearGradient>
+
+    <filter id="blur">
+      <feGaussianBlur stdDeviation="120"/>
+    </filter>
+  </defs>
+
+  <rect width="100%" height="100%" fill="url(#liveGradient)"/>
+  <rect width="100%" height="100%" fill="url(#liveGradient)" filter="url(#blur)" opacity="0.6"/>
+</svg>

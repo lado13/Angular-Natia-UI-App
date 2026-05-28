@@ -1,6 +1,8 @@
 <div class="container-fluid py-4 pt-1 p-4 ps-5 pb-3 pe-5">
 
 
+
+
   <!-- 🎄 New Year / Christmas Animation -->
   <div *ngIf="newYearActive" class="snow-container">
     <div *ngFor="let flake of snowflakes; trackBy: trackByFlakeId" class="snowflake" [ngStyle]="{
@@ -32,6 +34,7 @@
 
   <!-- 🌡️ Temperature Info -->
   <div *ngIf="temperatureInfo" class="temperature-info-container mt-4 container-fluid">
+    <p class="hided-stream">სტრიმები</p>
 
     <div class="d-flex justify-content-between align-items-center flex-wrap">
 
@@ -42,6 +45,62 @@
         </div>
         <!-- <img class="christmas-mistletoe" src="assets/images/bell.png"> -->
       </a>
+
+
+
+
+      <div class="electricity-panel">
+
+        <!-- Main Power -->
+        <div class="power-box" [ngClass]="{
+       'power-active': electricity[0]?.isMainElectricityOn,
+       'power-inactive': !electricity[0]?.isMainElectricityOn
+     }">
+          <!-- Pulse when Main Power is active -->
+          <i *ngIf="electricity[0]?.isMainElectricityOn" class="fa-solid fa-bolt-lightning fa-bounce electric-icon"
+            style="color: rgb(253, 255, 0);"></i>
+
+          <span>ქალაქის დენი</span>
+
+          <!-- Red Electric Line -->
+          <div class="electric-flow" *ngIf="electricity[0]?.isMainElectricityOn"></div>
+
+        </div>
+
+        <!-- Generator -->
+        <div class="power-box" [ngClass]="{
+       'generator-active': electricity[0]?.isGeneratorOn,
+       'generator-inactive': !electricity[0]?.isGeneratorOn
+     }">
+          <!-- Pulse when Main Power is active -->
+          <i *ngIf="electricity[0]?.isGeneratorOn" class="fa-solid fa-charging-station fa-beat-fade electric-icon"
+            style="color: rgb(65, 255, 0);"></i>
+          <span>გენერატორი</span>
+
+          <!-- Red Electric Line -->
+          <div class="electric-flow" *ngIf="electricity[0]?.isGeneratorOn"></div>
+
+        </div>
+
+
+        <button class="reload-btn" (click)="reload()">
+          <i class="fa-solid fa-arrows-rotate" style="color: rgb(39, 255, 183);"></i> Reload
+        </button>
+
+        <!-- engineers On Shift -->
+        <div class="enginer-info-container">
+          <div class="enginer-info" *ngFor="let eng of engineersOnShift; trackBy: trackByEngineer">
+            <img class="enginer-image" [src]="eng.pictureUrl || 'assets/default-avatar.png'" alt="{{eng.name}}">
+            <samp class="enginer-name">{{ eng.name }}</samp>
+
+            <span class="status-dot"></span>
+          </div>
+        </div>
+
+
+      </div>
+
+
 
 
 
@@ -70,7 +129,7 @@
       <!-- 
       <img class="christmas-hand-wave-penguin" src="assets/gif/merry-christmas-penguin.gif"> -->
 
-<!-- 
+      <!-- 
       <img src="assets/gif/santa-deer.gif" class="santa-deer"> -->
 
 
@@ -239,7 +298,7 @@
     <i class="fa-solid fa-message fa-bounce bell-icon"></i>
     <!-- <img class="bell-icon" src="assets/images/envelope.png"> -->
     <h5 class="p-3 rounded-3 d-inline-block robot-text">
-      <img class="robot-img" src="assets/gif/boolb-robot.gif" alt="happy-robot" width="100" height="100">
+      <img class="robot-img" src="assets/gif/natia-white-dress.gif" alt="happy-robot" width="100" height="100">
       {{ robotSpeech }}
     </h5>
   </div>
@@ -337,13 +396,73 @@
     </div>
 
 
+    <!-- CardInfoToActivate -->
+    <div class="cards-container float-end" *ngIf="(cards$ | async)?.length">
+      <h4 class="text-light fw-bold m-0 fs-6 mb-2">გასააქტიურებელი ბარათი</h4>
+      <table class="cards-table">
+        <thead>
+          <tr>
+            <th>EMR</th>
+            <th>Card</th>
+            <th>Port</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let card of cards$ | async">
+            <td>{{ card?.emr }}</td>
+            <td>{{ card?.card }}</td>
+            <td>{{ card?.port }}</td>
+            <td class="status">{{ card?.status }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
+
+    <!-- <div class="car-logo-container d-flex"> -->
+    <!-- BMW Logo -->
+    <!-- <div class="logo" (click)="moveCar('bmw')">
+        <img class="logo-img" src="/assets/images/bmw.png">
+        <samp class="dimitri">Dimitri shamugia Fan Club</samp>
+      </div> -->
+
+    <!-- Prius Logo -->
+    <!-- <div class="logo" (click)="moveCar('prius')">
+        <img class="logo-img" src="/assets/images/toyota.png">
+        <samp class="dimitri">Prius Fan Club Gurulo</samp>
+      </div>
+    </div> -->
+
+
+  </div>
+
+  <!-- BMW Car -->
+  <div class="car-wrapper bmw-wrapper" [class.moving]="cars.bmw">
+    <img class="car bmw-car" src="/assets/images/egzekut.png">
+    <div class="smoke-container">
+      <div class="smoke" *ngFor="let puff of smokePuffs"></div>
+    </div>
+  </div>
+
+  <!-- Prius Car -->
+  <div class="car-wrapper prius-wrapper" [class.moving]="cars.prius">
+    <img class="car prius-car" src="/assets/images/prius.png">
+    <div class="smoke-container">
+      <div class="smoke" *ngFor="let puff of smokePuffs"></div>
+    </div>
   </div>
 
 
 
 
+
+
+
+
   <div class="d-block container-fluid pe-5 problem-container">
+
+
 
     <!-- Channels With Problems -->
     <ng-container *ngIf="opticChannels$ | async as channels">
@@ -353,10 +472,10 @@
         No Channels With Problems available.
       </div> -->
 
-      <div class=" float-end" *ngIf="channels.length > 0">
+      <div class=" float-end problem-channels" *ngIf="channels.length > 0">
         <div class="table-responsive channel-table-wrapper">
-          <h6 class="text-light fw-bold m-0 fs-6 mb-2 channel-problem-title">
-            Optic Channels With Problems
+          <h6 class="text-light fw-bold m-0 fs-6 channel-problem-title">
+            პრობლემური არხები
           </h6>
           <table class="table table-sm align-middle mb-0 transparent-table">
             <thead class="text-uppercase">
@@ -397,28 +516,44 @@
       </div>
     </ng-container>
 
-    <!-- CardInfoToActivate -->
-    <div class="cards-container float-end" *ngIf="(cards$ | async)?.length">
-      <h4 class="text-light fw-bold m-0 fs-6 mb-2">Cards To Activate</h4>
-      <table class="cards-table">
-        <thead>
-          <tr>
-            <th>EMR</th>
-            <th>Card</th>
-            <th>Port</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of cards$ | async">
-            <td>{{ card?.emr }}</td>
-            <td>{{ card?.card }}</td>
-            <td>{{ card?.port }}</td>
-            <td class="status">{{ card?.status }}</td>
-          </tr>
-        </tbody>
-      </table>
+
+    <div class="harmonic-container">
+
+      <div *ngIf="isLoading; else dataContent" class="loading-state">
+        <div class="spinner"></div>
+        <span>Loading Harmonics...</span>
+      </div>
+
+      <ng-template #dataContent>
+        <p class="harmonic-title" *ngIf="harmonicSystems.length > 0">ჰარმონიკი</p>
+
+        <div class="harmonic" *ngIf="harmonicSystems.length > 0">
+          <div *ngFor="let system of harmonicSystems; trackBy: trackByHarmonicName" class="sys-card-sm"
+            [class.is-off]="!system.isOn" [class.is-alarm]="system.alarmCounts > 0">
+
+            <div class="card-head">
+              <span class="indicator-dot"></span>
+              <span class="status-label text-light">{{ system.isOn ? 'ON' : 'OFF' }}</span>
+              <span class="res-tag" *ngIf="system.isReadyToGoReserve">RES</span>
+            </div>
+
+            <div class="card-content">
+              <div class="sys-name-sm">{{ system.harmonicName }}</div>
+              <div class="sys-val">
+                <span class="val-num text-white" [class.txt-danger]="system.alarmCounts > 0">
+                  {{ system.alarmCounts }}
+                </span>
+                <span class="val-unit text-warning">alarms</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ng-template>
+
     </div>
+
+
+
   </div>
 
 
@@ -433,7 +568,7 @@
       ⏳ Loading satellites...
     </div>
 
-    <div *ngIf="satellites.length > 0" class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4 ps-3">
+    <div *ngIf="satellites.length > 0" class="row ps-3 pe-2">
       <div class="col satellite-box p-0" *ngFor="let sat of satellites; trackBy: trackByDegree">
         <div class="card satellite-card rounded-0 h-100 p-0 text-white border-0 position-relative overflow-hidden">
           <div class="card-header rounded-0 p-0 text-center fs-5 fw-bold" title="Satellite orbital position">

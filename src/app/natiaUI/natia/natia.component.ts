@@ -18,6 +18,9 @@ import { Snowflake } from '../../../model/snowflake';
 import { Router } from '@angular/router';
 import { WeatherUpdate } from '../../../model/weather-update';
 import { BusArrival } from '../../../model/bus-arrival';
+import { ElectricityInfo } from '../../../model/electricity-info';
+import { HarmonicSystem } from '../../../model/harmonic-system';
+import { EngineerOnShift } from '../../../model/engineer-on-shift';
 
 //system stream
 declare var webkitSpeechRecognition: any;
@@ -90,6 +93,20 @@ export class NatiaComponent implements OnInit {
   ////Bus Arrival
   buses: BusArrival[] = [];
 
+  // ⚡ Electricity info
+  electricity: ElectricityInfo[] = [];
+
+  harmonicSystems: HarmonicSystem[] = [];
+
+  engineersOnShift: EngineerOnShift[] = [];
+
+
+  // track which car is moving
+  cars = {
+    bmw: false,
+    prius: false
+  };
+
 
 
 
@@ -143,6 +160,7 @@ export class NatiaComponent implements OnInit {
     // //input comand system stream
     // this.startVoice();
 
+
   }
 
   ngOnDestroy(): void {
@@ -151,8 +169,22 @@ export class NatiaComponent implements OnInit {
     }
   }
 
+  reload() {
+    window.location.reload();
+  }
 
+  smokePuffs = Array(10);
 
+  moveCar(car: 'bmw' | 'prius') {
+    if (this.cars[car]) return;
+
+    this.cars[car] = true;
+
+    // reset after animation duration
+    setTimeout(() => {
+      this.cars[car] = false;
+    }, 5000); // match CSS animation duration
+  }
 
 
 
@@ -478,8 +510,8 @@ export class NatiaComponent implements OnInit {
           this.weatherList = dataArray.map(item => ({
             temperature: item.Temperature ?? item.temperature ?? 0,
             wind: item.Wind ?? item.wind ?? 0,
-            snow: item.Snow ?? item.snow ??'No Snow',
-            rain: item.Rain ?? item.rain ??'No Rain',
+            snow: item.Snow ?? item.snow ?? 'No Snow',
+            rain: item.Rain ?? item.rain ?? 'No Rain',
             timestamp: new Date().toISOString() // always provide string
           }));
 
@@ -508,6 +540,55 @@ export class NatiaComponent implements OnInit {
 
           // update Angular UI
           this.cdr.detectChanges();
+        });
+
+
+        // ⚡ Electricity info
+        this.signalRService.electricity$.subscribe((data: ElectricityInfo[] | null) => {
+
+          if (!data || data.length === 0) {
+            this.electricity = [];
+            this.cdr.detectChanges();
+            return;
+          }
+
+          const dataArray = Array.isArray(data) ? data : [data];
+
+          this.electricity = dataArray.map(item => ({
+            isGeneratorOn: item.isGeneratorOn ?? false,
+            isMainElectricityOn: item.isMainElectricityOn ?? false
+          }));
+
+          this.cdr.detectChanges();
+
+        });
+
+        // 🎹 Harmonic Info
+        this.signalRService.harmonicInfo$.subscribe(data => {
+          if (data && Array.isArray(data) && data.length > 0) {
+            // console.log('%c🎹 Harmonic update received:', 'color: orange;', JSON.stringify(data, null, 2));
+            this.harmonicSystems = [...data];
+            this.cdr.detectChanges();
+          } else {
+            console.warn('⚠️ Invalid or empty harmonicinfo data, skipping:', data);
+            this.harmonicSystems = [];
+            this.cdr.detectChanges();
+          }
+        });
+
+        // 👷 Engineers On Shift
+        this.signalRService.EngineerOnShiftInfo$.subscribe(data => {
+          if (data && Array.isArray(data) && data.length > 0) {
+
+            this.engineersOnShift = [...data];
+            this.cdr.detectChanges();
+
+          } else {
+            console.warn('⚠️ Invalid or empty enginnersonshift data, skipping:', data);
+
+            this.engineersOnShift = [];
+            this.cdr.detectChanges();
+          }
         });
 
 
@@ -767,6 +848,13 @@ export class NatiaComponent implements OnInit {
     return weather.timestamp ?? index.toString();
   }
 
+  trackByHarmonicName(index: number, system: HarmonicSystem): string {
+    return system.harmonicName;
+  }
+
+  trackByEngineer(index: number, eng: EngineerOnShift): string {
+    return eng.name ?? index.toString();
+  }
 
 
 }
