@@ -13,6 +13,9 @@
   <div *ngIf="error" class="alert alert-danger text-center py-2">
     ❌ {{ error }}
   </div>
+  <div *ngIf="!loading && !error && pagedStreams.length === 0" class="alert alert-warning text-center py-2">
+    No system stream info available yet. Waiting for cache...
+  </div>
 
   <div class="row g-2">
     <div *ngFor="let streamInfo of pagedStreams; trackBy: trackByStreamInfoIpPort" class="col-12">

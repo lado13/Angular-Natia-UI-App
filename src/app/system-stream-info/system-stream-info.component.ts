@@ -1,13 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, PLATFORM_ID } from '@angular/core';
 import { SystemStreamInfoService } from '../../service/system-stream-info.service';
 import { Program } from '../../model/program';
 import { Stream } from '../../model/stream';
-import { CommonModule } from '@angular/common';
+import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { SystemStreamInfo } from '../../model/systemStreamInfo';
 import { Router, RouterLink } from '@angular/router';
-
-//system stream
-declare var webkitSpeechRecognition: any;
 
 @Component({
   selector: 'app-system-stream-info',
@@ -16,7 +13,7 @@ declare var webkitSpeechRecognition: any;
   templateUrl: './system-stream-info.component.html',
   styleUrl: './system-stream-info.component.scss'
 })
-export class SystemStreamInfoComponent {
+export class SystemStreamInfoComponent implements OnInit, OnDestroy {
   systemStreams: SystemStreamInfo[] = [];
   pagedStreams: SystemStreamInfo[] = [];
 
@@ -24,37 +21,54 @@ export class SystemStreamInfoComponent {
   error = '';
 
   page = 1;
-  pageSize = 1; // number of streams per page
+  pageSize = 1;
 
+  private refreshTimer: ReturnType<typeof setInterval> | null = null;
 
-  //voice command prop system stream
-  recognition: any;
-  isListening = false;
-  status = "Stopped";
-  lastCommand = "";
-
-  constructor(private service: SystemStreamInfoService,
-    private router: Router
+  constructor(
+    private service: SystemStreamInfoService,
+    private router: Router,
+    @Inject(PLATFORM_ID) private platformId: object
   ) { }
 
   ngOnInit(): void {
+    if (!isPlatformBrowser(this.platformId)) {
+      this.loading = false;
+      return;
+    }
+
+    this.loadStreams();
+    this.refreshTimer = setInterval(() => this.loadStreams(true), 15000);
+  }
+
+  ngOnDestroy(): void {
+    if (this.refreshTimer) {
+      clearInterval(this.refreshTimer);
+    }
+  }
+
+  private loadStreams(silent = false): void {
+    if (!silent) {
+      this.loading = true;
+      this.error = '';
+    }
+
     this.service.getSystemStreamInfo().subscribe({
       next: (data) => {
-        console.log(data);
-
-        this.systemStreams = data;
+        this.systemStreams = Array.isArray(data) ? data : [];
+        if (this.page > this.totalPages) {
+          this.page = 1;
+        }
         this.updatePage();
         this.loading = false;
+        this.error = '';
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to load system stream info', err);
         this.error = 'Failed to load stream info';
         this.loading = false;
       }
     });
-
-    // //voice command
-    // this.startVoice()
-
   }
 
 

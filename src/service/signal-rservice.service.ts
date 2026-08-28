@@ -15,6 +15,7 @@ import { BusArrival } from '../model/bus-arrival';
 import { ElectricityInfo } from '../model/electricity-info';
 import { HarmonicSystem } from '../model/harmonic-system';
 import { EngineerOnShift } from '../model/engineer-on-shift';
+import { IpChannelProblem } from '../model/ip-channel-problem';
 
 @Injectable({
   providedIn: 'root'
@@ -67,6 +68,9 @@ export class SignalRService {
 
   private EngineerOnShiftSubject = new BehaviorSubject<EngineerOnShift[]>([]);
   EngineerOnShiftInfo$ = this.EngineerOnShiftSubject.asObservable();
+
+  private ipChannelProblemSource = new BehaviorSubject<IpChannelProblem[]>([]);
+  ipChannelProblem$ = this.ipChannelProblemSource.asObservable();
 
 
   //signaler connection start
@@ -354,6 +358,68 @@ export class SignalRService {
 
 
 
+    this.hubConnection.on('IpChannelProblemsUpdate', (data: any) => {
+      const rows = this.extractList(data).map(item => this.mapDynamicRow(item));
+      this.ipChannelProblemSource.next(rows);
+    });
+  }
+
+  private extractList(data: any): any[] {
+    if (data == null) {
+      return [];
+    }
+    if (Array.isArray(data)) {
+      return data;
+    }
+    if (typeof data !== 'object') {
+      return [];
+    }
+
+    const preferredKeys = [
+      'ipChannelProblems',
+      'ipChanellsWhichHaveProblem',
+      'ipChannelsWhichHaveProblem',
+      'channelProblems',
+      'problems',
+      'items',
+      'data'
+    ];
+
+    for (const key of preferredKeys) {
+      const foundKey = Object.keys(data).find(k => k.toLowerCase() === key.toLowerCase());
+      if (foundKey && Array.isArray(data[foundKey])) {
+        return data[foundKey];
+      }
+    }
+
+    const match = Object.entries(data).find(([key, value]) =>
+      Array.isArray(value) && /problem|channel|item/i.test(key)
+    );
+    if (match) {
+      return match[1] as any[];
+    }
+
+    const firstArray = Object.values(data).find(value => Array.isArray(value));
+    return Array.isArray(firstArray) ? firstArray : [];
+  }
+
+  private mapDynamicRow(item: any): IpChannelProblem {
+    if (!item || typeof item !== 'object') {
+      return {};
+    }
+
+    const row: IpChannelProblem = {};
+    for (const [key, value] of Object.entries(item)) {
+      if (value !== null && typeof value === 'object' && !Array.isArray(value)) {
+        continue;
+      }
+      row[this.toCamelKey(key)] = value;
+    }
+    return row;
+  }
+
+  private toCamelKey(key: string): string {
+    return key.charAt(0).toLowerCase() + key.slice(1);
   }
 }
 

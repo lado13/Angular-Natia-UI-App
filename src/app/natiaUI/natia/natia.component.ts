@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { ChannelServiceService } from '../../../service/channel-service.service';
 import { SignalRService } from '../../../service/signal-rservice.service';
 import { Satellite } from '../../../model/satellite';
+import { SatelliteDetail } from '../../../model/satellite-detail';
 import { TemperatureInfo } from '../../../model/temperature-info';
 import { TVChannel } from '../../../model/tvchannel';
 import { firstValueFrom, Observable } from 'rxjs';
@@ -21,6 +22,7 @@ import { BusArrival } from '../../../model/bus-arrival';
 import { ElectricityInfo } from '../../../model/electricity-info';
 import { HarmonicSystem } from '../../../model/harmonic-system';
 import { EngineerOnShift } from '../../../model/engineer-on-shift';
+import { IpChannelProblem } from '../../../model/ip-channel-problem';
 
 //system stream
 declare var webkitSpeechRecognition: any;
@@ -45,6 +47,7 @@ export class NatiaComponent implements OnInit {
 
   //channels signalr
   opticChannels$!: Observable<OpticChannelProblem[]>;
+  ipChannels$!: Observable<IpChannelProblem[]>;
 
   //card how need activate
   cards$!: Observable<CardInfoToActivate[]>;
@@ -71,10 +74,37 @@ export class NatiaComponent implements OnInit {
   currentAnimations: 'duck' | 'bat' | 'squad' | null = null;
   private index = 0;
 
+  christmasGreeting = [
+    { text: 'გისურვებთ', heart: false },
+    { text: 'ბედნიერ', heart: false },
+    { text: 'შობა', heart: false },
+    { text: 'ახალ', heart: false },
+    { text: 'წელს', heart: false },
+    { text: '♥', heart: true },
+    { text: '♥', heart: true },
+    { text: '♥', heart: true }
+  ];
+
+  private readonly robotGifDefault = 'assets/gif/boolb-robot.gif';
+  private readonly robotGifChristmas = 'assets/gif/sports-sportsmanias.gif';
+
+  private readonly discoAnimations: Record<string, string> = {
+    Morning: 'assets/gif/morning.gif',
+    Evening: 'assets/gif/evening.gif',
+    Night: 'assets/gif/night.gif',
+    Afternoon: 'assets/gif/afternoon.gif',
+    birthday: 'assets/gif/birthday.gif',
+    NatiasCpuOverload: 'assets/gif/overthinking-problem.gif',
+    NatiasRamOverload: 'assets/gif/cpu.gif',
+    TemperatureProblem: 'assets/gif/temperature.gif'
+  };
+
   //snow flakes
   currentTime: Date = new Date();
   private timer: any;
+  private themeTimer: any;
   newYearActive = false;
+  private snowAnimating = false;
   snowflakes: Snowflake[] = [];
 
   //channels detail info
@@ -127,23 +157,19 @@ export class NatiaComponent implements OnInit {
 
     //channels with problem
     this.opticChannels$ = this.signalRService.opticChannelProblem$;
+    this.ipChannels$ = this.signalRService.ipChannelProblem$;
 
     //card activate
     this.cards$ = this.signalRService.cardInfo$;
 
     //funny animation
     this.startAnimationCycle();
+    this.applyThemes();
 
-    // 🎄 Start snow effect automatically
-    this.startNewYearAnimation();
-
-    // check theme immediately
-    this.themeService.checkTimeAndSetTheme();
-
-    // re-check every 5 minutes (in case user keeps page open)
-    setInterval(() => {
-      this.themeService.checkTimeAndSetTheme();
-    }, 5 * 60 * 1000);
+    // re-check often so Windows date changes apply after refresh / while page stays open
+    this.themeTimer = setInterval(() => {
+      this.applyThemes();
+    }, 30 * 1000);
 
     this.timer = setInterval(() => {
       this.currentTime = new Date();
@@ -166,6 +192,32 @@ export class NatiaComponent implements OnInit {
   ngOnDestroy(): void {
     if (this.timer) {
       clearInterval(this.timer);
+    }
+    if (this.themeTimer) {
+      clearInterval(this.themeTimer);
+    }
+    this.stopNewYearAnimation();
+  }
+
+  get isChristmasTheme(): boolean {
+    return this.themeService.christmasActive;
+  }
+
+  get robotGif(): string {
+    return this.isChristmasTheme ? this.robotGifChristmas : this.robotGifDefault;
+  }
+
+  private applyThemes(): void {
+    this.themeService.checkTimeAndSetTheme();
+    this.syncChristmasEffects();
+    this.cdr.detectChanges();
+  }
+
+  private syncChristmasEffects(): void {
+    if (this.isChristmasTheme) {
+      this.startNewYearAnimation();
+    } else {
+      this.stopNewYearAnimation();
     }
   }
 
@@ -603,17 +655,7 @@ export class NatiaComponent implements OnInit {
 
   // -------------------- Disco animation mapping --------------------
   private setAnimation(message: string): void {
-    switch (message) {
-      case 'Morning': this.currentAnimation = 'assets/gif/morning.gif'; break;
-      case 'Evening': this.currentAnimation = 'assets/gif/evening.gif'; break;
-      case 'Night': this.currentAnimation = 'assets/gif/night.gif'; break;
-      case 'Afternoon': this.currentAnimation = 'assets/gif/afternoon.gif'; break;
-      case 'birthday': this.currentAnimation = 'assets/gif/birthday.gif'; break;
-      case 'NatiasCpuOverload': this.currentAnimation = 'assets/gif/overthinking-problem.gif'; break;
-      case 'NatiasRamOverload': this.currentAnimation = 'assets/gif/cpu.gif'; break;
-      case 'TemperatureProblem': this.currentAnimation = 'assets/gif/temperature.gif'; break;
-      default: this.currentAnimation = '/animations/default.gif'; break;
-    }
+    this.currentAnimation = this.discoAnimations[message] ?? '/animations/default.gif';
   }
 
   //updating channels how have error
@@ -635,21 +677,24 @@ export class NatiaComponent implements OnInit {
 
   //winter flake
   startNewYearAnimation() {
-    const now = new Date();
-    const month = now.getMonth();
-    const day = now.getDate();
-
-    // Active from Nov 18 to Jan 30
-    const isHoliday =
-      (month === 10 && day >= 18) ||
-      (month === 11) ||
-      (month === 0 && day <= 30);
-
-    if (!isHoliday) return;
+    if (!this.themeService.isChristmasSeason()) {
+      this.stopNewYearAnimation();
+      return;
+    }
 
     this.newYearActive = true;
     this.generateSnowflakes();
-    this.animateSnowflakes();
+
+    if (!this.snowAnimating) {
+      this.snowAnimating = true;
+      this.animateSnowflakes();
+    }
+  }
+
+  stopNewYearAnimation() {
+    this.newYearActive = false;
+    this.snowAnimating = false;
+    this.snowflakes = [];
   }
 
   generateSnowflakes() {
@@ -671,7 +716,10 @@ export class NatiaComponent implements OnInit {
   }
 
   animateSnowflakes() {
-    if (!this.newYearActive) return;
+    if (!this.newYearActive) {
+      this.snowAnimating = false;
+      return;
+    }
 
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
@@ -699,43 +747,68 @@ export class NatiaComponent implements OnInit {
 
   @HostListener('window:resize')
   onResize() {
-    this.generateSnowflakes();
+    if (this.newYearActive) {
+      this.generateSnowflakes();
+    }
+    if (this.canvasElement) {
+      this.canvasElement.width = window.innerWidth;
+      this.canvasElement.height = window.innerHeight;
+    }
+  }
+
+  @HostListener('document:visibilitychange')
+  onVisibilityChange() {
+    if (document.visibilityState === 'visible') {
+      this.applyThemes();
+    }
   }
 
 
 
   //present firework
-  @ViewChild('fwCanvas') canvasRef!: ElementRef<HTMLCanvasElement>;
+  private fireworksStarted = false;
+  private canvasElement?: HTMLCanvasElement;
   ctx!: CanvasRenderingContext2D;
   particles: any[] = [];
 
-
-
-  autoClickPresent() {
-    const present = document.querySelector('.present') as HTMLElement;
-    if (!present) return;
-
-    // Perform 3 automatic clicks
-    for (let i = 0; i < 1; i++) {
-      setTimeout(() => {
-        present.click();
-      }, i * 300); // 3 clicks: 0ms, 300ms, 600ms
+  @ViewChild('fwCanvas')
+  set fwCanvas(ref: ElementRef<HTMLCanvasElement> | undefined) {
+    this.canvasElement = ref?.nativeElement;
+    if (this.canvasElement) {
+      this.initFireworksCanvas();
+    } else {
+      this.fireworksStarted = false;
     }
   }
 
+  autoClickPresent() {
+    if (!this.isChristmasTheme) return;
+    const present = document.querySelector('.present') as HTMLElement;
+    if (!present) return;
+    present.click();
+  }
 
-  ngAfterViewInit() {
-    const canvas = this.canvasRef.nativeElement;
+  private initFireworksCanvas() {
+    const canvas = this.canvasElement;
+    if (!canvas) return;
+
     this.ctx = canvas.getContext('2d')!;
-
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
-    this.loop();
+    if (!this.fireworksStarted) {
+      this.fireworksStarted = true;
+      this.loop();
+    }
+  }
+
+  ngAfterViewInit() {
+    this.initFireworksCanvas();
   }
 
   // Fireworks at screen center
   boom(event?: MouseEvent) {
+    if (!this.isChristmasTheme) return;
     const x = window.innerWidth / 2;
     const y = window.innerHeight / 2;
 
@@ -767,7 +840,11 @@ export class NatiaComponent implements OnInit {
 
   loop() {
     const ctx = this.ctx;
-    const canvas = this.canvasRef.nativeElement;
+    const canvas = this.canvasElement;
+    if (!ctx || !canvas || !this.isChristmasTheme) {
+      this.fireworksStarted = false;
+      return;
+    }
 
     // SOFT FADE (better than full clear)
     ctx.fillStyle = "rgba(0, 0, 0, 0)"; // transparent canvas
@@ -812,6 +889,79 @@ export class NatiaComponent implements OnInit {
 
 
 
+
+  private readonly nonOrbitalSatelliteLabels = new Set([
+    'Relay',
+    'Optic',
+    'ENCODERS',
+    'MULTISWITCHES',
+    'MUKHIANII',
+    'MUKHIANI I',
+    'MUKHIANI II'
+  ]);
+
+  getSatelliteValueClass(detail: SatelliteDetail): Record<string, boolean> {
+    return {
+      'natia-error': !!detail?.HaveError,
+      'natia-warn': !detail?.HaveError && !!detail?.HaveWarn,
+      'natia-success': !detail?.HaveError && !detail?.HaveWarn
+    };
+  }
+
+  getSatelliteMerClass(detail: SatelliteDetail): Record<string, boolean> {
+    return {
+      'natia-error': !!detail?.HaveError,
+      'natia-warn': !detail?.HaveError && !!detail?.HaveWarn,
+      'symbolRate': !detail?.HaveError && !detail?.HaveWarn
+    };
+  }
+
+  getSatelliteTitle(detail: SatelliteDetail): string {
+    if (detail?.HaveError) {
+      return 'Transponder has an error';
+    }
+    if (detail?.HaveWarn) {
+      return 'Transponder warning';
+    }
+    return 'Operational';
+  }
+
+  hasValidMer(mer: string | null | undefined): boolean {
+    return mer != null && mer !== '' && mer !== 'N/A';
+  }
+
+  showSatelliteIcon(degree: string | null | undefined): boolean {
+    if (!degree) {
+      return false;
+    }
+    return !this.nonOrbitalSatelliteLabels.has(degree.toString());
+  }
+
+  getRelayInfoClass(info: { isHaveProblem?: boolean; isWarning?: boolean }): Record<string, boolean> {
+    return {
+      'natia-temp-error': !!info?.isHaveProblem,
+      'natia-warn': !info?.isHaveProblem && !!info?.isWarning,
+      'natia-success': !info?.isHaveProblem && !info?.isWarning
+    };
+  }
+
+  getEmrTempClass(emrTemp: EmrTemperature): Record<string, boolean> {
+    return {
+      'natia-temp-error': !!emrTemp?.IsError,
+      'natia-warn': !emrTemp?.IsError && !!emrTemp?.IsWarm,
+      'natia-success': !emrTemp?.IsError && !emrTemp?.IsWarm
+    };
+  }
+
+  getEmrTempLabel(emrTemp: EmrTemperature): string {
+    if (emrTemp?.IsError) {
+      return 'Hot';
+    }
+    if (emrTemp?.IsWarm) {
+      return 'Warm';
+    }
+    return 'Normal';
+  }
 
   // trackBy function for ngFor
   trackByFlakeId(index: number, flake: Snowflake) {

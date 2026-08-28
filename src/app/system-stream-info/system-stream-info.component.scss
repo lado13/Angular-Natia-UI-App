@@ -225,3 +225,28 @@ body {
         margin-left: 4px;
     }
 }
+
+@media (max-width: 600px) {
+    .container-fluid {
+        padding: 12px !important;
+    }
+
+    .inner-container {
+        max-width: 100% !important;
+        flex: 1 1 100%;
+    }
+
+    .program-card {
+        margin-bottom: 8px;
+    }
+
+    .pagination {
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .back-btn {
+        margin-top: 8px;
+    }
+}

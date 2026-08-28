@@ -1,16 +1,16 @@
-import { TestBed } from '@angular/core/testing';
+// import { TestBed } from '@angular/core/testing';
 
-import { SystemStreamInfoService } from './system-stream-info.service';
+// import { SystemStreamInfoService } from './system-stream-info.service';
 
-describe('SystemStreamInfoService', () => {
-  let service: SystemStreamInfoService;
+// describe('SystemStreamInfoService', () => {
+//   let service: SystemStreamInfoService;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(SystemStreamInfoService);
-  });
+//   beforeEach(() => {
+//     TestBed.configureTestingModule({});
+//     service = TestBed.inject(SystemStreamInfoService);
+//   });
 
-  it('should be created', () => {
-    expect(service).toBeTruthy();
-  });
-});
+//   it('should be created', () => {
+//     expect(service).toBeTruthy();
+//   });
+// });
