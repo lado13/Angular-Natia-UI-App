@@ -697,6 +697,10 @@ export class NatiaComponent implements OnInit {
     this.snowflakes = [];
   }
 
+  test(location: string) {
+    console.log(location);
+  }
+
   generateSnowflakes() {
     const screenWidth = window.innerWidth;
     const screenHeight = window.innerHeight;
