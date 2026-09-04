@@ -89,10 +89,10 @@ export class SignalRService {
     this.hubConnection.onclose((error) => {
       console.error('❌ SignalR connection closed:', error);
     });
+    this.registerListeners();
     try {
       await this.hubConnection.start();
       console.log('%c✅ SignalR connected to', 'color: green;', environment.signalRHubUrl);
-      this.registerListeners();
     } catch (error) {
       console.error('❌ SignalR connection error:', error);
       throw error;
@@ -219,11 +219,11 @@ export class SignalRService {
     this.hubConnection.on('regionbitrateupdate', (data: any) => {
       const updates: RegionRelay[] = Array.isArray(data) ? data : [];
       if (updates.length === 0) {
-        console.log('[SignalR] No region relays found, clearing BehaviorSubject.');
+        // console.log('[SignalR] No region relays found, clearing BehaviorSubject.');
         this.regionRelaySource.next([]);
         return;
       }
-      console.log('[SignalR] Updating BehaviorSubject with new region relays.');
+      // console.log('[SignalR] Updating BehaviorSubject with new region relays.');
       this.regionRelaySource.next(updates.map(u => ({ ...u })));
     });
 
@@ -267,8 +267,28 @@ export class SignalRService {
     });
 
 
-    //Bus Arrival
+    // //Bus Arrival
+    // this.hubConnection.on('autoArrivalUpdate', (data: any) => {
+    //   const dataArray = Array.isArray(data) ? data : [data];
+
+    //   if (dataArray.length > 0) {
+    //     const mappedData: BusArrival[] = dataArray.map(item => ({
+    //       shortName: item.shortName ?? '',
+    //       headsign: item.headsign ?? '',
+    //       realtimeArrivalMinutes: item.realtimeArrivalMinutes ?? 0
+    //     }));
+
+    //     this.busArrivalSubject.next(mappedData);
+    //   } else {
+    //     console.warn('⚠️ Invalid or empty autoArrivalUpdate data, skipping:', data);
+    //     this.busArrivalSubject.next([]);
+    //   }
+    // });
+
+
+    // Bus Arrival
     this.hubConnection.on('autoArrivalUpdate', (data: any) => {
+      console.log('📦 Raw autoArrivalUpdate data received:', data);
       const dataArray = Array.isArray(data) ? data : [data];
 
       if (dataArray.length > 0) {
@@ -278,14 +298,13 @@ export class SignalRService {
           realtimeArrivalMinutes: item.realtimeArrivalMinutes ?? 0
         }));
 
+        console.log('✅ Mapped bus arrival data:', mappedData);
         this.busArrivalSubject.next(mappedData);
       } else {
         console.warn('⚠️ Invalid or empty autoArrivalUpdate data, skipping:', data);
         this.busArrivalSubject.next([]);
       }
     });
-
-
 
 
     // // ⚡ Electricity Info
@@ -329,30 +348,34 @@ export class SignalRService {
         this.harmonicSubject.next([]);
       }
 
-      console.log("harmonicinfo updated:", data);
+      // console.log("harmonicinfo updated:", data);
     });
 
 
     //enginnersonshift
     this.hubConnection.on('enginnersonshift', (data: any) => {
-      const dataArray = Array.isArray(data) ? data : [data];
+      const list = this.extractList(data);
+      console.log('👷 enginnersonshift', {
+        empty: list.length === 0,
+        count: list.length,
+        raw: data,
+        keys: data && typeof data === 'object' ? Object.keys(data) : [],
+        firstItem: list[0] ?? null
+      });
 
-      if (dataArray.length > 0) {
-
-        const mappedData: EngineerOnShift[] = dataArray.map(item => ({
-          name: item.nameOfEmployee ?? 'Unknown',
-          pictureUrl: item.pictureUrl ?? ''
-        }));
-
-        this.EngineerOnShiftSubject.next(mappedData);
-
-      } else {
-        console.warn('⚠️ Invalid or empty enginnersonshift data, skipping:', data);
+      if (list.length === 0) {
+        console.warn('⚠️ Engineer info is empty');
         this.EngineerOnShiftSubject.next([]);
+        return;
       }
 
-      console.log('enginnersonshift updated:', dataArray);
-      console.log('JSON:\n', JSON.stringify(dataArray, null, 2));
+      const mappedData: EngineerOnShift[] = list.map(item => ({
+        name: item?.nameOfEmployee ?? item?.NameOfEmployee ?? item?.name ?? item?.Name ?? 'Unknown',
+        pictureUrl: item?.pictureUrl ?? item?.PictureUrl ?? item?.picture ?? ''
+      }));
+
+      console.log('👷 enginnersonshift mapped', mappedData);
+      this.EngineerOnShiftSubject.next(mappedData);
     });
 
 

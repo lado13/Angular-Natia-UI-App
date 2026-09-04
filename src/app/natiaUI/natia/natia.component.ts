@@ -7,7 +7,7 @@ import { Satellite } from '../../../model/satellite';
 import { SatelliteDetail } from '../../../model/satellite-detail';
 import { TemperatureInfo } from '../../../model/temperature-info';
 import { TVChannel } from '../../../model/tvchannel';
-import { firstValueFrom, Observable } from 'rxjs';
+import { firstValueFrom, Observable, Subscription } from 'rxjs';
 import { ThemeServiceService } from '../../../service/theme-service.service';
 import { OpticChannelProblem } from '../../../model/optic-channel-problem';
 import { CardInfoToActivate } from '../../../model/card-info-to-activate';
@@ -26,6 +26,18 @@ import { IpChannelProblem } from '../../../model/ip-channel-problem';
 
 //system stream
 declare var webkitSpeechRecognition: any;
+
+type FunnyAnimKind = 'cross' | 'cross-reverse' | 'fly' | 'peek';
+type PeekCorner = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+interface FunnyAnimation {
+  id: string;
+  src: string;
+  kind: FunnyAnimKind;
+  durationMs: number;
+  alt: string;
+  corner?: PeekCorner;
+}
 
 @Component({
   selector: 'app-natia',
@@ -69,10 +81,22 @@ export class NatiaComponent implements OnInit {
   weatherList: WeatherUpdate[] = [];
   isWeatherLoading = true; // loading indicator
 
-  //random animation 
-  animations: ('duck' | 'bat' | 'squad')[] = ['duck', 'bat', 'squad'];
-  currentAnimations: 'duck' | 'bat' | 'squad' | null = null;
-  private index = 0;
+  // random funny animations — add more items here
+  private readonly funnyAnimations: FunnyAnimation[] = [
+    { id: 'duck', src: 'assets/gif/duck2.gif', kind: 'cross', durationMs: 40000, alt: 'Duck' },
+    { id: 'bat', src: 'assets/gif/bat-paniki.gif', kind: 'fly', durationMs: 40000, alt: 'Bat' },
+    { id: 'squad', src: 'assets/gif/squad-team.gif', kind: 'cross', durationMs: 40000, alt: 'Squad' },
+    { id: 'peek', src: 'assets/gif/pengu-pudgy.gif', kind: 'peek', durationMs: 8000, alt: 'Spy penguin' },
+    { id: 'gossip', src: 'assets/gif/gasp-gossip.gif', kind: 'peek', durationMs: 8000, alt: 'Shhh penguin' },
+    { id: 'tiger', src: 'assets/gif/tiger.gif', kind: 'cross', durationMs: 20000, alt: 'Tiger' },
+    { id: 'car', src: 'assets/gif/car-cute.gif', kind: 'cross-reverse', durationMs: 60000, alt: 'Car' },
+  ];
+  private readonly peekCorners: PeekCorner[] = ['bottom-left', 'bottom-right'];
+  currentFunny: FunnyAnimation | null = null;
+  private lastFunnyId: string | null = null;
+  private funnyQueue: FunnyAnimation[] = [];
+  private funnyShowTimer: ReturnType<typeof setTimeout> | null = null;
+  private funnyWaitTimer: ReturnType<typeof setTimeout> | null = null;
 
   christmasGreeting = [
     { text: 'გისურვებთ', heart: false },
@@ -109,9 +133,10 @@ export class NatiaComponent implements OnInit {
 
   //channels detail info
   hoverHtml: string | null = null;
-  isLoading = false;
   hoverX = 0;
   hoverY = 0;
+  private hoverChannelName: string | null = null;
+  private detailsSub?: Subscription;
 
 
   // //voice command prop system stream
@@ -195,6 +220,13 @@ export class NatiaComponent implements OnInit {
     }
     if (this.themeTimer) {
       clearInterval(this.themeTimer);
+    }
+    this.detailsSub?.unsubscribe();
+    if (this.funnyShowTimer) {
+      clearTimeout(this.funnyShowTimer);
+    }
+    if (this.funnyWaitTimer) {
+      clearTimeout(this.funnyWaitTimer);
     }
     this.stopNewYearAnimation();
   }
@@ -314,42 +346,44 @@ export class NatiaComponent implements OnInit {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   //fanny animation
   startAnimationCycle() {
-    const animation = this.animations[this.index];
+    if (this.funnyShowTimer) {
+      clearTimeout(this.funnyShowTimer);
+    }
+    if (this.funnyWaitTimer) {
+      clearTimeout(this.funnyWaitTimer);
+    }
+
+    if (this.funnyQueue.length === 0) {
+      this.funnyQueue = [...this.funnyAnimations].sort(() => Math.random() - 0.5);
+      if (this.funnyQueue.length > 1 && this.funnyQueue[0].id === this.lastFunnyId) {
+        this.funnyQueue.push(this.funnyQueue.shift() as FunnyAnimation);
+      }
+    }
+
+    const base = this.funnyQueue.shift() ?? this.funnyAnimations[0];
+    const animation: FunnyAnimation = { ...base };
+    if (animation.kind === 'peek') {
+      animation.corner = this.peekCorners[Math.floor(Math.random() * this.peekCorners.length)];
+    }
+
     const now = new Date();
-    console.log(`🟢 Animation START: ${animation} at ${now.toLocaleTimeString()}`);
+    console.log(`🟢 Animation START: ${animation.id} (${animation.kind}) at ${now.toLocaleTimeString()}`);
 
-    // Show the current animation
-    this.currentAnimations = animation;
+    this.currentFunny = animation;
+    this.lastFunnyId = animation.id;
+    this.cdr.detectChanges();
 
-    // Animation duration: 40 seconds
-    setTimeout(() => {
-      // Hide the animation after it finishes
-      this.currentAnimations = null;
-      this.cdr.detectChanges(); // Trigger Angular change detection
-      const end = new Date();
-      console.log(`🔴 Animation END: ${animation} at ${end.toLocaleTimeString()}`);
+    this.funnyShowTimer = setTimeout(() => {
+      this.currentFunny = null;
+      this.cdr.detectChanges();
+      console.log(`🔴 Animation END: ${animation.id} at ${new Date().toLocaleTimeString()}`);
 
-      // Wait 1 hour before showing the next animation
-      setTimeout(() => {
-        this.index = (this.index + 1) % this.animations.length;
-        this.startAnimationCycle(); // Recursively show the next animation
-      }, 3600000); // 1 hour = 3600000ms
-    }, 40000); // 40 seconds = animation duration
+      this.funnyWaitTimer = setTimeout(() => {
+        this.startAnimationCycle();
+      }, 3600000);
+    }, animation.durationMs + 200);
   }
 
 
@@ -397,7 +431,7 @@ export class NatiaComponent implements OnInit {
       } catch (error) {
         console.error(`❌ Data load error (attempt ${attempt}/${retries}):`, error);
         if (attempt < retries) {
-          console.log(`⏳ Retrying in ${delay}ms...`);
+          // console.log(`⏳ Retrying in ${delay}ms...`);
           await new Promise(resolve => setTimeout(resolve, delay));
         }
       }
@@ -411,29 +445,43 @@ export class NatiaComponent implements OnInit {
 
   // Channel detail hover
   onChannelHover(name: string, event: MouseEvent) {
+    event.stopPropagation();
+
+    // same channel is already open — close it
+    if (this.hoverChannelName === name && this.hoverHtml) {
+      this.hoverHtml = null;
+      this.hoverChannelName = null;
+      this.detailsSub?.unsubscribe();
+      return;
+    }
+
     this.hoverX = event.clientX;
     this.hoverY = event.clientY;
-    this.isLoading = true;
-    this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
+    this.hoverChannelName = name;
+    if (!this.hoverHtml) {
+      this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
+    }
 
-    this.channelService.getChannelDetails(name).subscribe({
+    this.detailsSub?.unsubscribe();
+    this.detailsSub = this.channelService.getChannelDetails(name).subscribe({
       next: (html) => {
+        if (this.hoverChannelName !== name) {
+          return;
+        }
         if (html && html.trim() !== '') {
-          // If response has content
           this.hoverHtml = html;
-          console.log(`✅ Channel details loaded for ${name}:`, html);
+          // console.log(`✅ Channel details loaded for ${name}:`, html);
         } else {
-          // If response is empty or null
           this.hoverHtml = `<b style='color:orange'>No details available for ${name}</b>`;
           console.warn(`⚠️ No details returned for ${name}`);
         }
-        this.isLoading = false;
       },
       error: (err) => {
-        // Log full error object
+        if (this.hoverChannelName !== name) {
+          return;
+        }
         console.error(`❌ Error loading channel details for ${name}:`, err);
         this.hoverHtml = `<b style='color:red'>Error loading details for ${name}</b>`;
-        this.isLoading = false;
       }
     });
   }
@@ -442,11 +490,18 @@ export class NatiaComponent implements OnInit {
   //on click removes chanels details hover
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: Event) {
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('.channel-pill')) {
+      return;
+    }
+
     const tooltip = document.querySelector('.hover-tooltip-future');
 
     // hide only if click is OUTSIDE tooltip
     if (tooltip && !tooltip.contains(event.target as Node)) {
       this.hoverHtml = null;
+      this.hoverChannelName = null;
+      this.detailsSub?.unsubscribe();
     }
   }
 
@@ -468,7 +523,7 @@ export class NatiaComponent implements OnInit {
             this.cdr.detectChanges();
             clearTimeout(discoTimeout);
             discoTimeout = setTimeout(() => {
-              console.log('🕛 Disco cleared after 10 seconds');
+              // console.log('🕛 Disco cleared after 10 seconds');
               this.currentMessage = null;
               this.currentAnimation = null;
               this.cdr.detectChanges();
@@ -573,8 +628,6 @@ export class NatiaComponent implements OnInit {
 
         // 🌦️ Bus arrival info
         this.signalRService.busArrival$.subscribe((data: BusArrival[] | null) => {
-          this.isLoading = false;
-
           if (!data || data.length === 0) {
             this.buses = [];
             this.cdr.detectChanges();
@@ -891,13 +944,14 @@ export class NatiaComponent implements OnInit {
 
 
   private readonly nonOrbitalSatelliteLabels = new Set([
-    'Relay',
-    'Optic',
-    'ENCODERS',
-    'MULTISWITCHES',
-    'MUKHIANII',
-    'MUKHIANI I',
-    'MUKHIANI II'
+    'relay',
+    'optic',
+    'ip/optic',
+    't2',
+    'encoders',
+    'multiswitches',
+    'mukhianii',
+    'mukhianiii'
   ]);
 
   getSatelliteValueClass(detail: SatelliteDetail): Record<string, boolean> {
@@ -934,7 +988,8 @@ export class NatiaComponent implements OnInit {
     if (!degree) {
       return false;
     }
-    return !this.nonOrbitalSatelliteLabels.has(degree.toString());
+    const normalized = degree.toString().trim().toLowerCase().replace(/\s+/g, '');
+    return !this.nonOrbitalSatelliteLabels.has(normalized);
   }
 
   getRelayInfoClass(info: { isHaveProblem?: boolean; isWarning?: boolean }): Record<string, boolean> {
@@ -975,6 +1030,10 @@ export class NatiaComponent implements OnInit {
 
   trackByDegree(index: number, satellite: Satellite): string {
     return satellite.Degree;
+  }
+
+  trackBySatelliteDetail(index: number, detail: SatelliteDetail): string {
+    return `${detail.Frequency}|${detail.Polarisation}|${detail.SymbolRate}|${detail.PortIn250}`;
   }
 
   trackByRegion(index: number, region: RegionRelay): string {

@@ -192,16 +192,9 @@
             .card-body {
                 font-weight: bolder;
                 font-size: 18px;
-                --status-pulse-spread: 8px;
-                --status-pulse-scale: 1;
 
                 .satellite-value {
                     width: -webkit-fill-available;
-                }
-
-                .natia-warn,
-                .natia-error {
-                    animation-name: statusPulse;
                 }
             }
         }
@@ -270,6 +263,18 @@
         flex-wrap: wrap;
         gap: 12px; // smaller spacing
         padding: 5px;
+
+        .enginer-loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 104px;
+            height: 42px;
+
+            .loader {
+                width: 36px;
+            }
+        }
 
         .enginer-info {
             position: relative;
@@ -720,19 +725,64 @@
     }
 }
 
-//duck animation
-.duck-container {
+.funny-layer {
     position: fixed;
-    bottom: 100px;
-    width: 100%;
     pointer-events: none;
     z-index: 9999;
 }
 
-.duck {
-    position: relative;
-    width: 120px;
-    animation: moveDuck 40s linear forwards;
+.funny-layer[data-kind="cross"] {
+    bottom: 100px;
+    width: 100%;
+
+    img {
+        position: relative;
+        width: 120px;
+        animation: moveDuck var(--funny-duration, 40s) linear forwards;
+    }
+}
+
+.funny-layer[data-id="squad"] img {
+    width: 160px;
+}
+
+.funny-layer[data-id="tiger"] img {
+    width: 400px;
+    mix-blend-mode: screen;
+}
+
+.funny-layer[data-kind="cross-reverse"] {
+    bottom: 80px;
+    left: 0;
+    width: 100%;
+    height: 180px;
+    overflow: visible;
+
+    img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 260px;
+        mix-blend-mode: screen;
+        animation: moveReverse var(--funny-duration, 60s) linear forwards;
+    }
+}
+
+@keyframes moveReverse {
+    0% {
+        transform: translateX(100vw);
+        opacity: 1;
+    }
+
+    80% {
+        transform: translateX(calc(-100% - 40px));
+        opacity: 1;
+    }
+
+    100% {
+        transform: translateX(calc(-100% - 40px));
+        opacity: 1;
+    }
 }
 
 @keyframes moveDuck {
@@ -752,20 +802,15 @@
     }
 }
 
-
-//bat animation
-.bat-container {
-    position: fixed;
+.funny-layer[data-kind="fly"] {
     bottom: 0;
     left: 50%;
     transform: translateX(-50%);
-    pointer-events: none;
-    z-index: 9999;
-}
 
-.bat {
-    width: 150px;
-    animation: flyUp 40s linear forwards;
+    img {
+        width: 150px;
+        animation: flyUp var(--funny-duration, 40s) linear forwards;
+    }
 }
 
 @keyframes flyUp {
@@ -780,39 +825,110 @@
     }
 }
 
+.funny-layer[data-kind="peek"] {
+    width: 170px;
+    height: 170px;
+    overflow: hidden;
 
-
-
-
-//squad pinguen animation
-.squad-container {
-    position: fixed;
-    bottom: 100px;
-    width: 100%;
-    pointer-events: none;
-    z-index: 9999;
+    img {
+        position: absolute;
+        width: 170px;
+        height: auto;
+        animation-duration: var(--funny-duration, 8s);
+        animation-timing-function: ease-in-out;
+        animation-fill-mode: forwards;
+    }
 }
 
-.squad {
-    position: relative;
-    width: 150px;
-    animation: moveSquad 40s linear forwards;
+.funny-layer[data-kind="peek"][data-corner="bottom-right"] {
+    bottom: 0;
+    right: 0;
+
+    img {
+        right: 0;
+        bottom: 0;
+        animation-name: peekBottomRight;
+    }
 }
 
-@keyframes moveSquad {
-    0% {
-        left: -150px;
-        opacity: 1;
-    }
+.funny-layer[data-kind="peek"][data-corner="bottom-left"] {
+    bottom: 0;
+    left: 0;
 
-    50% {
-        left: 100vw;
-        opacity: 1;
+    img {
+        left: 0;
+        bottom: 0;
+        animation-name: peekBottomLeft;
     }
+}
 
+.funny-layer[data-kind="peek"][data-corner="top-right"] {
+    top: 0;
+    right: 0;
+
+    img {
+        right: 0;
+        top: 0;
+        animation-name: peekTopRight;
+    }
+}
+
+.funny-layer[data-kind="peek"][data-corner="top-left"] {
+    top: 0;
+    left: 0;
+
+    img {
+        left: 0;
+        top: 0;
+        animation-name: peekTopLeft;
+    }
+}
+
+@keyframes peekBottomRight {
+    0%,
     100% {
-        left: 100vw;
-        opacity: 0;
+        transform: translate(80%, 80%);
+    }
+
+    18%,
+    70% {
+        transform: translate(18%, 18%);
+    }
+}
+
+@keyframes peekBottomLeft {
+    0%,
+    100% {
+        transform: translate(-80%, 80%);
+    }
+
+    18%,
+    70% {
+        transform: translate(-18%, 18%);
+    }
+}
+
+@keyframes peekTopRight {
+    0%,
+    100% {
+        transform: translate(80%, -80%);
+    }
+
+    18%,
+    70% {
+        transform: translate(18%, -18%);
+    }
+}
+
+@keyframes peekTopLeft {
+    0%,
+    100% {
+        transform: translate(-80%, -80%);
+    }
+
+    18%,
+    70% {
+        transform: translate(-18%, -18%);
     }
 }
 

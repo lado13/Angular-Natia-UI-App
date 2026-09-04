@@ -1,16 +1,16 @@
-// import { TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-// import { SignalRServiceService } from './signal-rservice.service';
+import { SignalRService } from './signal-rservice.service';
 
-// describe('SignalRServiceService', () => {
-//   let service: SignalRServiceService;
+describe('SignalRService', () => {
+  let service: SignalRService;
 
-//   beforeEach(() => {
-//     TestBed.configureTestingModule({});
-//     service = TestBed.inject(SignalRServiceService);
-//   });
+  beforeEach(() => {
+    TestBed.configureTestingModule({});
+    service = TestBed.inject(SignalRService);
+  });
 
-//   it('should be created', () => {
-//     expect(service).toBeTruthy();
-//   });
-// });
+  it('should be created', () => {
+    expect(service).toBeTruthy();
+  });
+});

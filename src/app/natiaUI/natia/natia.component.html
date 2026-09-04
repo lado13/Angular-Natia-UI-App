@@ -88,6 +88,10 @@
 
         <!-- engineers On Shift -->
         <div class="enginer-info-container">
+          <div *ngIf="engineersOnShift.length === 0" class="enginer-loading text-light">
+            <img class="loader" src="assets/svg/loader.svg" alt="Loading...">
+            No enginer info available.
+          </div>
           <div class="enginer-info" *ngFor="let eng of engineersOnShift; trackBy: trackByEngineer">
             <img class="enginer-image" [src]="eng.pictureUrl || 'assets/default-avatar.png'" alt="{{eng.name}}">
             <samp class="enginer-name">{{ eng.name }}</samp>
@@ -260,19 +264,11 @@
   </div>
 
 
-  <!-- Duck -->
-  <div class="duck-container" *ngIf="currentAnimations === 'duck'">
-    <img src="assets/gif/duck2.gif" class="duck" alt="Duck" />
-  </div>
-
-  <!-- Bat -->
-  <div class="bat-container" *ngIf="currentAnimations === 'bat'">
-    <img src="assets/gif/bat-paniki.gif" class="bat" alt="Bat" />
-  </div>
-
-  <!-- Squad -->
-  <div class="squad-container" *ngIf="currentAnimations === 'squad'">
-    <img src="assets/gif/squad-team.gif" class="squad" alt="Squad Team" />
+  <!-- Funny animations (duck / bat / squad / corner peek) -->
+  <div *ngIf="currentFunny as anim" class="funny-layer" [attr.data-kind]="anim.kind"
+    [attr.data-id]="anim.id" [attr.data-corner]="anim.corner || null"
+    [style.--funny-duration]="anim.durationMs + 'ms'">
+    <img [src]="anim.src" [alt]="anim.alt" />
   </div>
 
   <!-- Disco container -->
@@ -353,16 +349,10 @@
     </div>
 
 
-    <!-- bus-list -->
+      <!-- bus-list -->
     <div class="bus-list-container">
-      <!-- Loading state -->
-      <div *ngIf="isLoading" class="loading">
-        <img class="loader" src="assets/svg/loader.svg">
-        Loading bus arrivals...
-      </div>
-
       <!-- Bus cards horizontal scroll -->
-      <div *ngIf="!isLoading && buses.length > 0" class="bus-cards">
+      <div *ngIf="buses.length > 0" class="bus-cards">
         <div *ngFor="let bus of buses" class="bus-card">
           <div class="bus-number">{{ bus.shortName }}</div>
           <div class="bus-destination">{{ bus.headsign }}</div>
@@ -372,34 +362,37 @@
       </div>
 
       <!-- Empty state -->
-      <div *ngIf="!isLoading && buses.length === 0" class="empty">
+      <div *ngIf="buses.length === 0" class="empty">
+        <img class="loader" src="assets/svg/loader.svg" alt="Loading...">
         No bus arrivals available.
       </div>
     </div>
 
 
     <!-- CardInfoToActivate -->
-    <div class="cards-container float-end" *ngIf="(cards$ | async)?.length">
-      <h4 class="text-light fw-bold m-0 fs-6 mb-2">გასააქტიურებელი ბარათი</h4>
-      <table class="cards-table">
-        <thead>
-          <tr>
-            <th>EMR</th>
-            <th>Card</th>
-            <th>Port</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let card of cards$ | async">
-            <td>{{ card?.emr }}</td>
-            <td>{{ card?.card }}</td>
-            <td>{{ card?.port }}</td>
-            <td class="status">{{ card?.status }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <ng-container *ngIf="cards$ | async as cards">
+      <div class="cards-container float-end" *ngIf="cards.length">
+        <h4 class="text-light fw-bold m-0 fs-6 mb-2">გასააქტიურებელი ბარათი</h4>
+        <table class="cards-table">
+          <thead>
+            <tr>
+              <th>EMR</th>
+              <th>Card</th>
+              <th>Port</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let card of cards">
+              <td>{{ card?.emr }}</td>
+              <td>{{ card?.card }}</td>
+              <td>{{ card?.port }}</td>
+              <td class="status">{{ card?.status }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </ng-container>
 
 
     <!-- <div class="car-logo-container d-flex"> -->
@@ -500,38 +493,29 @@
 
 
     <div class="harmonic-container">
+      <p class="harmonic-title" *ngIf="harmonicSystems.length > 0">ჰარმონიკი</p>
 
-      <div *ngIf="isLoading; else dataContent" class="loading-state">
-        <div class="spinner"></div>
-        <span>Loading Harmonics...</span>
-      </div>
+      <div class="harmonic" *ngIf="harmonicSystems.length > 0">
+        <div *ngFor="let system of harmonicSystems; trackBy: trackByHarmonicName" class="sys-card-sm"
+          [class.is-off]="!system.isOn" [class.is-alarm]="system.alarmCounts > 0">
 
-      <ng-template #dataContent>
-        <p class="harmonic-title" *ngIf="harmonicSystems.length > 0">ჰარმონიკი</p>
+          <div class="card-head">
+            <span class="indicator-dot"></span>
+            <span class="status-label text-light">{{ system.isOn ? 'ON' : 'OFF' }}</span>
+            <span class="res-tag" *ngIf="system.isReadyToGoReserve">RES</span>
+          </div>
 
-        <div class="harmonic" *ngIf="harmonicSystems.length > 0">
-          <div *ngFor="let system of harmonicSystems; trackBy: trackByHarmonicName" class="sys-card-sm"
-            [class.is-off]="!system.isOn" [class.is-alarm]="system.alarmCounts > 0">
-
-            <div class="card-head">
-              <span class="indicator-dot"></span>
-              <span class="status-label text-light">{{ system.isOn ? 'ON' : 'OFF' }}</span>
-              <span class="res-tag" *ngIf="system.isReadyToGoReserve">RES</span>
-            </div>
-
-            <div class="card-content">
-              <div class="sys-name-sm">{{ system.harmonicName }}</div>
-              <div class="sys-val">
-                <span class="val-num text-white" [class.txt-danger]="system.alarmCounts > 0">
-                  {{ system.alarmCounts }}
-                </span>
-                <span class="val-unit text-warning">alarms</span>
-              </div>
+          <div class="card-content">
+            <div class="sys-name-sm">{{ system.harmonicName }}</div>
+            <div class="sys-val">
+              <span class="val-num text-white" [class.txt-danger]="system.alarmCounts > 0">
+                {{ system.alarmCounts }}
+              </span>
+              <span class="val-unit text-warning">alarms</span>
             </div>
           </div>
         </div>
-      </ng-template>
-
+      </div>
     </div>
 
 
@@ -561,7 +545,7 @@
           </div>
 
           <div class="card-body d-flex flex-column p-0">
-            <div *ngFor="let d of sat.details" class="sat-detail d-flex p-1">
+            <div *ngFor="let d of sat.details; trackBy: trackBySatelliteDetail" class="sat-detail d-flex p-1">
               <span class="badge satellite-value rounded-0"
                 [ngClass]="getSatelliteValueClass(d)"
                 [title]="getSatelliteTitle(d)">
