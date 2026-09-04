@@ -135,8 +135,10 @@ export class NatiaComponent implements OnInit {
   hoverHtml: string | null = null;
   hoverX = 0;
   hoverY = 0;
+  tooltipFlipX = false;
   private hoverChannelName: string | null = null;
   private detailsSub?: Subscription;
+  private tooltipAnchor: { pillLeft: number; pillTop: number; pillRight: number; pillBottom: number } | null = null;
 
 
   // //voice command prop system stream
@@ -462,7 +464,6 @@ export class NatiaComponent implements OnInit {
       this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
     }
 
-    this.detailsSub?.unsubscribe();
     this.detailsSub = this.channelService.getChannelDetails(name).subscribe({
       next: (html) => {
         if (this.hoverChannelName !== name) {
@@ -496,9 +497,13 @@ export class NatiaComponent implements OnInit {
     }
 
     const tooltip = document.querySelector('.hover-tooltip-future');
+    if (!tooltip) {
+      return;
+    }
 
-    // hide only if click is OUTSIDE tooltip
-    if (tooltip && !tooltip.contains(event.target as Node)) {
+    const clickedInside = tooltip.contains(event.target as Node);
+    const closeOnCardTap = window.innerWidth <= 600 && clickedInside;
+    if (!clickedInside || closeOnCardTap) {
       this.hoverHtml = null;
       this.hoverChannelName = null;
       this.detailsSub?.unsubscribe();

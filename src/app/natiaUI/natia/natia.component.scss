@@ -79,8 +79,8 @@
 
 .hover-tooltip-future {
     position: fixed;
-    max-width: 320px;
-    max-height: 350px;
+    max-width: min(320px, calc(100vw - 24px));
+    max-height: min(350px, calc(100vh - 24px));
     /* ← ADD THIS */
     overflow-y: auto;
     /* ← ADD THIS */
@@ -141,6 +141,12 @@
     border-width: 8px;
     border-style: solid;
     border-color: transparent rgba(30, 30, 40, 0.85) transparent transparent;
+}
+
+.hover-tooltip-future.flip-x::after {
+    left: auto;
+    right: -8px;
+    border-color: transparent transparent transparent rgba(30, 30, 40, 0.85);
 }
 
 /* Fade-in animation */

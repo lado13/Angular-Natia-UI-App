@@ -260,7 +260,8 @@
 
   <!-- 🎯 FUTURISTIC HOVER TOOLTIP -->
   <div class="hover-tooltip-future" *ngIf="hoverHtml" [innerHTML]="hoverHtml"
-    [ngStyle]="{'top.px': hoverY + 20, 'left.px': hoverX + 20}">
+    [class.flip-x]="tooltipFlipX"
+    [ngStyle]="{'top.px': hoverY, 'left.px': hoverX}">
   </div>
 
 
