@@ -461,18 +461,23 @@ export class NatiaComponent implements OnInit {
 
     // same channel is already open — close it
     if (this.hoverChannelName === name && this.hoverHtml) {
-      this.hoverHtml = null;
-      this.hoverChannelName = null;
-      this.detailsSub?.unsubscribe();
+      this.closeChannelTooltip();
       return;
     }
 
-    this.hoverX = event.clientX;
-    this.hoverY = event.clientY;
+    this.detailsSub?.unsubscribe();
+
+    const pill = (event.currentTarget as HTMLElement).getBoundingClientRect();
+    this.tooltipAnchor = {
+      pillLeft: pill.left,
+      pillTop: pill.top,
+      pillRight: pill.right,
+      pillBottom: pill.bottom
+    };
     this.hoverChannelName = name;
-    if (!this.hoverHtml) {
-      this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
-    }
+    this.hoverHtml = `<div class="hover-loading">Loading details for ${name}...</div>`;
+    this.placeChannelTooltip();
+    this.scheduleTooltipPlace();
 
     this.detailsSub = this.channelService.getChannelDetails(name).subscribe({
       next: (html) => {
@@ -486,6 +491,7 @@ export class NatiaComponent implements OnInit {
           this.hoverHtml = `<b style='color:orange'>No details available for ${name}</b>`;
           console.warn(`⚠️ No details returned for ${name}`);
         }
+        this.scheduleTooltipPlace();
       },
       error: (err) => {
         if (this.hoverChannelName !== name) {
@@ -493,10 +499,69 @@ export class NatiaComponent implements OnInit {
         }
         console.error(`❌ Error loading channel details for ${name}:`, err);
         this.hoverHtml = `<b style='color:red'>Error loading details for ${name}</b>`;
+        this.scheduleTooltipPlace();
       }
     });
   }
 
+  private scheduleTooltipPlace(): void {
+    this.cdr.detectChanges();
+    requestAnimationFrame(() => {
+      if (!this.hoverHtml) {
+        return;
+      }
+      this.placeChannelTooltip();
+      this.cdr.detectChanges();
+    });
+  }
+
+  private placeChannelTooltip(): void {
+    if (!this.hoverHtml) {
+      return;
+    }
+
+    const pad = 12;
+    const gap = 12;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const el = document.querySelector('.hover-tooltip-future') as HTMLElement | null;
+    const width = Math.min(el?.offsetWidth || 320, vw - pad * 2);
+    const height = Math.min(el?.offsetHeight || 160, vh - pad * 2);
+    const anchor = this.tooltipAnchor;
+
+    const pillRight = anchor?.pillRight ?? this.hoverX;
+    const pillLeft = anchor?.pillLeft ?? this.hoverX;
+    const pillTop = anchor?.pillTop ?? this.hoverY;
+
+    const rightPos = pillRight + gap;
+    const leftPos = pillLeft - width - gap;
+    const spaceRight = vw - pad - rightPos;
+    const spaceLeft = pillLeft - gap - pad;
+
+    if (width <= spaceRight || spaceRight >= spaceLeft) {
+      this.hoverX = rightPos;
+      this.tooltipFlipX = false;
+    } else {
+      this.hoverX = leftPos;
+      this.tooltipFlipX = true;
+    }
+
+    this.hoverX = Math.min(Math.max(this.hoverX, pad), Math.max(pad, vw - width - pad));
+
+    let top = pillTop;
+    if (top + height > vh - pad) {
+      top = vh - height - pad;
+    }
+    this.hoverY = Math.min(Math.max(top, pad), Math.max(pad, vh - height - pad));
+  }
+
+  private closeChannelTooltip(): void {
+    this.hoverHtml = null;
+    this.hoverChannelName = null;
+    this.tooltipAnchor = null;
+    this.tooltipFlipX = false;
+    this.detailsSub?.unsubscribe();
+  }
 
   //on click removes chanels details hover
   @HostListener('document:click', ['$event'])
@@ -514,9 +579,7 @@ export class NatiaComponent implements OnInit {
     const clickedInside = tooltip.contains(event.target as Node);
     const closeOnCardTap = window.innerWidth <= 600 && clickedInside;
     if (!clickedInside || closeOnCardTap) {
-      this.hoverHtml = null;
-      this.hoverChannelName = null;
-      this.detailsSub?.unsubscribe();
+      this.closeChannelTooltip();
     }
   }
 
@@ -821,6 +884,9 @@ export class NatiaComponent implements OnInit {
     if (this.canvasElement) {
       this.canvasElement.width = window.innerWidth;
       this.canvasElement.height = window.innerHeight;
+    }
+    if (this.hoverHtml) {
+      this.scheduleTooltipPlace();
     }
   }
 
