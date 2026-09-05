@@ -349,7 +349,6 @@
     transform: translateX(-50%);
     z-index: 999999999999;
     max-width: 500px;
-    // animation: waveContainer 3s ease-in-out infinite;
 
     .robot-text {
         font-family: "robot-text", sans-serif;
@@ -387,15 +386,6 @@
     height: 326px;
     top: -288px;
     left: -96px;
-
-    // position: absolute;
-    // width: 341px;
-    // height: 836px;
-    // top: -809px;
-    // left: -26px;
-
-    // border-radius: 50%;
-    // animation: float 2s ease-in-out infinite;
 }
 
 :host-context(.christmas-theme) .robot-img {
@@ -891,6 +881,7 @@
 }
 
 @keyframes peekBottomRight {
+
     0%,
     100% {
         transform: translate(80%, 80%);
@@ -903,6 +894,7 @@
 }
 
 @keyframes peekBottomLeft {
+
     0%,
     100% {
         transform: translate(-80%, 80%);
@@ -915,6 +907,7 @@
 }
 
 @keyframes peekTopRight {
+
     0%,
     100% {
         transform: translate(80%, -80%);
@@ -927,6 +920,7 @@
 }
 
 @keyframes peekTopLeft {
+
     0%,
     100% {
         transform: translate(-80%, -80%);
@@ -949,10 +943,14 @@
     transform-origin: center;
     position: absolute;
     right: -68px;
-    top: -56px;
+    top: -114px;
     color: #1b242f;
     width: 127px;
 
+}
+
+i.bell-icon {
+    top: -70px;
 }
 
 
@@ -1215,28 +1213,26 @@
 
 .christmas-wrapper {
     position: absolute;
-    left: 31%;
-    border-radius: 18px;
-    background: rgb(35 32 62 / 48%);
-    backdrop-filter: blur(10px);
-    box-shadow:
-        0 10px 30px rgba(0, 0, 0, 0.4),
-        inset 0 0 25px rgba(255, 255, 255, 0.08);
+    left: 37%;
+    top: 2px;
 }
 
 
 /* ===== TEXT ===== */
 .christmas-text {
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 900;
-    font-family: "ChristmasFont", sans-serif;
+    font-family: 'FontAwesome';
     letter-spacing: 2px;
     white-space: nowrap;
     text-align: center;
 
+
     .hurt {
         color: yellow;
     }
+
+
 }
 
 .christmas-text-word {
@@ -1269,8 +1265,8 @@
 .christmas-tree {
     width: 180px;
     position: absolute;
-    bottom: 122px;
-    left: 725px;
+    bottom: 137px;
+    right: 658px;
     z-index: 999999;
     transform-origin: bottom center;
 
@@ -1311,12 +1307,12 @@
     transform-origin: top center;
 }
 
-.christmas-hand-wave-penguin {
-    position: absolute;
-    top: -4px;
-    left: 479px;
-    width: 173px;
-}
+// .christmas-hand-wave-penguin {
+//     position: absolute;
+//     top: -4px;
+//     left: 479px;
+//     width: 173px;
+// }
 
 //socks
 .christmas-candy {
@@ -1386,8 +1382,8 @@
 
 .present {
     position: absolute;
-    bottom: 157px;
-    left: 736px;
+    bottom: 171px;
+    right: 778px;
     width: 50px;
     height: 50px;
     cursor: pointer;
@@ -1884,6 +1880,7 @@
 
 // Tablet
 @media (max-width: 992px) {
+
     .electricity-panel,
     .weather-card,
     .region-relay-section,
@@ -1957,7 +1954,7 @@
             margin-bottom: 8px;
         }
 
-        > .d-flex {
+        >.d-flex {
             flex-direction: column;
             align-items: stretch !important;
             gap: 12px;
@@ -2028,7 +2025,7 @@
     }
 
     .christmas-mistletoe,
-    .christmas-hand-wave-penguin,
+    // .christmas-hand-wave-penguin,
     .christmas-candy,
     .christmas-happy-holidays,
     .santa-deer {
@@ -2036,22 +2033,22 @@
     }
 
     .christmas-tree {
-        position: relative !important;
+        position: absolute !important;
+        right: 8px !important;
         left: auto !important;
-        bottom: auto !important;
-        display: block;
-        margin: 8px auto;
-        width: 120px;
+        bottom: 72px !important;
+        width: 90px;
+        margin: 0;
     }
 
     .present {
-        position: relative !important;
+        position: absolute !important;
+        right: 72px !important;
         left: auto !important;
-        bottom: auto !important;
-        display: block;
-        margin: 8px auto;
-        width: 40px;
-        height: 40px;
+        bottom: 92px !important;
+        width: 32px;
+        height: 32px;
+        margin: 0;
     }
 
     .chanells-container {
@@ -2072,37 +2069,51 @@
     }
 
     .robot-container {
-        position: relative;
-        left: auto;
-        top: auto;
-        transform: none;
-        max-width: 100%;
-        margin: 16px 0;
-        z-index: 2;
+        position: absolute;
+        left: 50%;
+        top: 70%;
+        transform: translateX(-50%);
+        max-width: min(280px, calc(100vw - 24px));
+        margin: 0;
+        z-index: 9999;
 
         .robot-img {
-            position: relative;
-            width: 120px;
+            position: absolute;
+            width: 150px;
             height: auto;
-            top: auto;
-            left: auto;
-            display: block;
-            margin: 0 auto 8px;
+            top: -140px;
+            left: -48px;
+            margin: 0;
         }
 
         .bell-icon {
-            position: relative;
-            right: auto;
-            top: auto;
-            width: auto;
+            position: absolute;
+            right: -36px;
+            top: -56px;
+            width: 64px;
             font-size: 28px;
-            margin-bottom: 8px;
+        }
+
+        i.bell-icon {
+            top: -35px;
         }
 
         .robot-text {
-            display: block;
-            width: 100%;
+            display: inline-block;
+            width: auto;
+            max-width: min(280px, calc(100vw - 24px));
+            font-size: 14px;
+            padding: 10px !important;
+            overflow-wrap: anywhere;
         }
+    }
+
+    :host-context(.christmas-theme) .robot-img {
+        position: absolute;
+        top: -184px;
+        left: -48px;
+        width: 150px;
+        height: auto;
     }
 
     .region-relay-section {
@@ -2110,23 +2121,41 @@
         left: auto !important;
         margin: 12px 0;
         width: 100%;
+        overflow-x: auto;
 
         .row {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap;
             gap: 6px;
             margin: 0;
+            min-width: 0;
         }
 
         .col-4 {
-            flex: 1 1 calc(33.333% - 6px);
-            max-width: calc(33.333% - 6px);
+            flex: 1 1 0;
+            min-width: 0;
+            max-width: none;
             width: auto;
             padding: 0 !important;
         }
 
         .region-relay {
             width: 100%;
+        }
+
+        .tiny-badge {
+            font-size: 11px;
+            padding: 0.12rem 0.2rem;
+        }
+
+        .fit-cell {
+            font-size: 9px;
+        }
+
+        .card-title {
+            font-size: 11px;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     }
 
@@ -2262,10 +2291,15 @@
     }
 
     .disco-container {
-        width: calc(100vw - 24px);
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: auto;
+        max-width: calc(100vw - 24px);
 
         img {
-            max-width: 220px;
+            max-width: 160px;
         }
     }
 

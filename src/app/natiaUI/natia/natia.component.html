@@ -121,8 +121,8 @@
         </h5>
       </div>
 
-      <img *ngIf="isChristmasTheme" class="christmas-hand-wave-penguin"
-        src="assets/gif/merry-christmas-penguin.gif" alt="penguin">
+      <!-- <img *ngIf="isChristmasTheme" class="christmas-hand-wave-penguin"
+        src="assets/gif/merry-christmas-penguin.gif" alt="penguin"> -->
       <img *ngIf="isChristmasTheme" src="assets/gif/santa-deer.gif" class="santa-deer" alt="santa deer">
 
 
@@ -269,7 +269,7 @@
   <div *ngIf="currentFunny as anim" class="funny-layer" [attr.data-kind]="anim.kind"
     [attr.data-id]="anim.id" [attr.data-corner]="anim.corner || null"
     [style.--funny-duration]="anim.durationMs + 'ms'">
-    <img [src]="anim.src" [alt]="anim.alt" />
+    <img [src]="funnySrc(anim)" [alt]="anim.alt" />
   </div>
 
   <!-- Disco container -->
@@ -281,8 +281,8 @@
 
   <!-- robot say -->
   <div *ngIf="robotSpeech" class="text-center mt-4 robot-container">
-    <i class="fa-solid fa-message fa-bounce bell-icon"></i>
-    <!-- <img class="bell-icon" src="assets/images/envelope.png"> -->
+    <i *ngIf="!isChristmasTheme" class="fa-solid fa-message fa-bounce bell-icon"></i>
+    <img *ngIf="isChristmasTheme" class="bell-icon" src="assets/images/envelope.png" alt="envelope">
     <h5 class="p-3 rounded-3 d-inline-block robot-text">
       <img class="robot-img" [src]="robotGif" alt="happy-robot" width="100" height="100">
       {{ robotSpeech }}

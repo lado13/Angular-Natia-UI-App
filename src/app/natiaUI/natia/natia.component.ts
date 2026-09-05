@@ -105,8 +105,6 @@ export class NatiaComponent implements OnInit {
     { text: 'ახალ', heart: false },
     { text: 'წელს', heart: false },
     { text: '♥', heart: true },
-    { text: '♥', heart: true },
-    { text: '♥', heart: true }
   ];
 
   private readonly robotGifDefault = 'assets/gif/boolb-robot.gif';
@@ -190,8 +188,8 @@ export class NatiaComponent implements OnInit {
     this.cards$ = this.signalRService.cardInfo$;
 
     //funny animation
-    this.startAnimationCycle();
     this.applyThemes();
+    this.startAnimationCycle();
 
     // re-check often so Windows date changes apply after refresh / while page stays open
     this.themeTimer = setInterval(() => {
@@ -239,6 +237,19 @@ export class NatiaComponent implements OnInit {
 
   get robotGif(): string {
     return this.isChristmasTheme ? this.robotGifChristmas : this.robotGifDefault;
+  }
+
+  funnySrc(anim: FunnyAnimation): string {
+    if (!this.isChristmasTheme) {
+      return anim.src;
+    }
+    if (anim.id === 'bat') {
+      return 'assets/gif/tree-christmas-tree.gif';
+    }
+    if (anim.id === 'squad') {
+      return 'assets/gif/santa-claus-runing.gif';
+    }
+    return anim.src;
   }
 
   private applyThemes(): void {
@@ -369,7 +380,6 @@ export class NatiaComponent implements OnInit {
     if (animation.kind === 'peek') {
       animation.corner = this.peekCorners[Math.floor(Math.random() * this.peekCorners.length)];
     }
-
     const now = new Date();
     console.log(`🟢 Animation START: ${animation.id} (${animation.kind}) at ${now.toLocaleTimeString()}`);
 
