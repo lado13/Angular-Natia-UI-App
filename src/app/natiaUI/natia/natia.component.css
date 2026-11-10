@@ -61,8 +61,8 @@
 
 .hover-tooltip-future {
   position: fixed;
-  max-width: 320px;
-  max-height: 350px;
+  max-width: min(320px, 100vw - 24px);
+  max-height: min(350px, 100vh - 24px);
   /* ← ADD THIS */
   overflow-y: auto;
   /* ← ADD THIS */
@@ -79,6 +79,8 @@
   color: #d1d1d1;
   font-size: 15px;
   line-height: 1.3rem;
+  overflow-wrap: anywhere;
+  word-break: break-word;
   /* Shadow & glow */
   box-shadow: 0 0 15px rgba(202, 202, 202, 0.3), 0 0 25px rgba(255, 255, 255, 0.2);
   /* Animation */
@@ -117,6 +119,12 @@
   border-width: 8px;
   border-style: solid;
   border-color: transparent rgba(30, 30, 40, 0.85) transparent transparent;
+}
+
+.hover-tooltip-future.flip-x::after {
+  left: auto;
+  right: -8px;
+  border-color: transparent transparent transparent rgba(30, 30, 40, 0.85);
 }
 
 /* Fade-in animation */
@@ -210,6 +218,16 @@
   gap: 12px;
   padding: 5px;
 }
+.temperature-info-container .enginer-info-container .enginer-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 104px;
+  height: 42px;
+}
+.temperature-info-container .enginer-info-container .enginer-loading .loader {
+  width: 36px;
+}
 .temperature-info-container .enginer-info-container .enginer-info {
   position: relative;
   display: flex;
@@ -300,10 +318,10 @@
 
 .robot-img {
   position: absolute;
-  width: 306px;
-  height: 326px;
-  top: -288px;
-  left: -96px;
+  width: 336px;
+  height: 675px;
+  top: -631px;
+  left: -122px;
 }
 
 /* Container floating wave */
@@ -500,9 +518,12 @@
 }
 
 .natia-temp-error {
+  --status-pulse-color: tomato;
+  --status-pulse-spread: 12px;
+  --status-pulse-scale: 1;
   background-color: tomato;
   color: white;
-  animation: redPulseTemp 1.5s infinite;
+  animation: statusPulse 1.5s infinite;
   font-weight: bolder !important;
 }
 
@@ -513,16 +534,22 @@
 }
 
 .natia-error {
+  --status-pulse-color: tomato;
+  --status-pulse-spread: 12px;
+  --status-pulse-scale: 1.06;
   background-color: tomato;
   color: white;
-  animation: redPulse 1.5s infinite;
+  animation: statusPulse 1.5s infinite;
   font-weight: bolder !important;
 }
 
 .natia-warn {
+  --status-pulse-color: #ffc107;
+  --status-pulse-spread: 12px;
+  --status-pulse-scale: 1;
   background-color: #e3eb00;
   color: black;
-  animation: warnPulse 1.5s infinite;
+  animation: statusPulse 1.5s infinite;
   font-weight: bolder !important;
 }
 
@@ -530,42 +557,18 @@
   background-color: #6c757d;
 }
 
-@keyframes redPulseTemp {
+@keyframes statusPulse {
   0% {
-    background-color: tomato;
-    box-shadow: 0 0 0 0 tomato;
+    box-shadow: 0 0 0 0 var(--status-pulse-color, #ffc107);
+    transform: scale(1);
   }
   70% {
-    box-shadow: 0 0 0 20px rgba(220, 53, 69, 0);
+    box-shadow: 0 0 0 var(--status-pulse-spread, 12px) transparent;
+    transform: scale(var(--status-pulse-scale, 1));
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
-  }
-}
-@keyframes redPulse {
-  0% {
-    background-color: tomato;
-    box-shadow: 0 0 0 0 tomato;
-  }
-  70% {
-    box-shadow: 0 0 0 20px rgba(220, 53, 69, 0);
-    scale: 1.1;
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
-    scale: 1;
-  }
-}
-@keyframes warnPulse {
-  0% {
-    background-color: #e3eb00;
-    box-shadow: 0 0 0 0 #ffc107;
-  }
-  70% {
-    box-shadow: 0 0 0 20px rgba(255, 193, 7, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(255, 193, 7, 0);
+    box-shadow: 0 0 0 0 transparent;
+    transform: scale(1);
   }
 }
 @media (max-width: 576px) {
@@ -574,22 +577,65 @@
     text-overflow: unset;
     font-size: 0.85rem;
     padding: 0.5rem;
+    width: 100%;
+    max-width: 100%;
   }
 }
-.duck-container {
+.funny-layer {
   position: fixed;
-  bottom: 100px;
-  width: 100%;
   pointer-events: none;
   z-index: 9999;
 }
 
-.duck {
+.funny-layer[data-kind=cross] {
+  bottom: 100px;
+  width: 100%;
+}
+.funny-layer[data-kind=cross] img {
   position: relative;
   width: 120px;
-  animation: moveDuck 40s linear forwards;
+  animation: moveDuck var(--funny-duration, 40s) linear forwards;
 }
 
+.funny-layer[data-id=squad] img {
+  width: 160px;
+}
+
+.funny-layer[data-id=tiger] img {
+  width: 400px;
+  mix-blend-mode: screen;
+}
+
+.funny-layer[data-kind=cross-reverse] {
+  bottom: 80px;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  overflow: visible;
+}
+.funny-layer[data-kind=cross-reverse] img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 260px;
+  mix-blend-mode: screen;
+  animation: moveReverse var(--funny-duration, 60s) linear forwards;
+}
+
+@keyframes moveReverse {
+  0% {
+    transform: translateX(100vw);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(calc(-100% - 40px));
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(calc(-100% - 40px));
+    opacity: 1;
+  }
+}
 @keyframes moveDuck {
   0% {
     left: -150px;
@@ -604,18 +650,14 @@
     opacity: 0;
   }
 }
-.bat-container {
-  position: fixed;
+.funny-layer[data-kind=fly] {
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  pointer-events: none;
-  z-index: 9999;
 }
-
-.bat {
+.funny-layer[data-kind=fly] img {
   width: 150px;
-  animation: flyUp 40s linear forwards;
+  animation: flyUp var(--funny-duration, 40s) linear forwards;
 }
 
 @keyframes flyUp {
@@ -628,32 +670,90 @@
     opacity: 1;
   }
 }
-.squad-container {
-  position: fixed;
-  bottom: 100px;
-  width: 100%;
-  pointer-events: none;
-  z-index: 9999;
+.funny-layer[data-kind=peek] {
+  width: 170px;
+  height: 170px;
+  overflow: hidden;
+}
+.funny-layer[data-kind=peek] img {
+  position: absolute;
+  width: 170px;
+  height: auto;
+  animation-duration: var(--funny-duration, 8s);
+  animation-timing-function: ease-in-out;
+  animation-fill-mode: forwards;
 }
 
-.squad {
-  position: relative;
-  width: 150px;
-  animation: moveSquad 40s linear forwards;
+.funny-layer[data-kind=peek][data-corner=bottom-right] {
+  bottom: 0;
+  right: 0;
+}
+.funny-layer[data-kind=peek][data-corner=bottom-right] img {
+  right: 0;
+  bottom: 0;
+  animation-name: peekBottomRight;
 }
 
-@keyframes moveSquad {
-  0% {
-    left: -150px;
-    opacity: 1;
+.funny-layer[data-kind=peek][data-corner=bottom-left] {
+  bottom: 0;
+  left: 0;
+}
+.funny-layer[data-kind=peek][data-corner=bottom-left] img {
+  left: 0;
+  bottom: 0;
+  animation-name: peekBottomLeft;
+}
+
+.funny-layer[data-kind=peek][data-corner=top-right] {
+  top: 0;
+  right: 0;
+}
+.funny-layer[data-kind=peek][data-corner=top-right] img {
+  right: 0;
+  top: 0;
+  animation-name: peekTopRight;
+}
+
+.funny-layer[data-kind=peek][data-corner=top-left] {
+  top: 0;
+  left: 0;
+}
+.funny-layer[data-kind=peek][data-corner=top-left] img {
+  left: 0;
+  top: 0;
+  animation-name: peekTopLeft;
+}
+
+@keyframes peekBottomRight {
+  0%, 100% {
+    transform: translate(80%, 80%);
   }
-  50% {
-    left: 100vw;
-    opacity: 1;
+  18%, 70% {
+    transform: translate(18%, 18%);
   }
-  100% {
-    left: 100vw;
-    opacity: 0;
+}
+@keyframes peekBottomLeft {
+  0%, 100% {
+    transform: translate(-80%, 80%);
+  }
+  18%, 70% {
+    transform: translate(-18%, 18%);
+  }
+}
+@keyframes peekTopRight {
+  0%, 100% {
+    transform: translate(80%, -80%);
+  }
+  18%, 70% {
+    transform: translate(18%, -18%);
+  }
+}
+@keyframes peekTopLeft {
+  0%, 100% {
+    transform: translate(-80%, -80%);
+  }
+  18%, 70% {
+    transform: translate(-18%, -18%);
   }
 }
 .bell-icon {
@@ -663,9 +763,13 @@
   transform-origin: center;
   position: absolute;
   right: -68px;
-  top: -56px;
+  top: -114px;
   color: #1b242f;
   width: 127px;
+}
+
+i.bell-icon {
+  top: -70px;
 }
 
 /* Apply to icon */
@@ -750,6 +854,100 @@
 }
 
 /* 🎄 CHRISTMAS EDITION */
+.classic-watch.christmas {
+  font-size: 1.25rem;
+  font-weight: 600;
+  padding: 6px 20px;
+  letter-spacing: 2px;
+  color: #fffaf0;
+  text-transform: uppercase;
+  background: linear-gradient(145deg, #7a1414, #b91c1c 35%, #14532d);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 215, 0, 0.45);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.6), inset 0 0 30px rgba(255, 255, 255, 0.06), 0 0 18px rgba(255, 215, 0, 0.35);
+  animation: christmasPulse 2.8s ease-in-out infinite;
+}
+
+.classic-watch.christmas::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -160%;
+  width: 160%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 215, 0, 0.35), transparent);
+  transform: skewX(-25deg);
+  animation: shineMove 4s linear infinite;
+}
+
+.classic-watch.christmas::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.35) 2px, transparent 3px), radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.25) 1.5px, transparent 3px), radial-gradient(circle at 40% 80%, rgba(255, 255, 255, 0.3) 2px, transparent 3px);
+  opacity: 0.45;
+  animation: snowTwinkle 3s ease-in-out infinite;
+}
+
+.classic-watch.christmas:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75), 0 0 25px rgba(255, 215, 0, 0.6), 0 0 45px rgba(220, 38, 38, 0.6);
+}
+
+.classic-watch.christmas i {
+  color: #ffd700;
+  animation: bellRing 1.5s ease-in-out infinite;
+}
+
+@keyframes christmasPulse {
+  0% {
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 28px rgba(34, 197, 94, 0.6);
+  }
+  100% {
+    box-shadow: 0 0 14px rgba(255, 215, 0, 0.35);
+  }
+}
+@keyframes shineMove {
+  0% {
+    left: -160%;
+  }
+  100% {
+    left: 160%;
+  }
+}
+@keyframes snowTwinkle {
+  0%, 100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+@keyframes bellRing {
+  0% {
+    transform: rotate(0deg);
+  }
+  25% {
+    transform: rotate(10deg);
+  }
+  50% {
+    transform: rotate(-10deg);
+  }
+  75% {
+    transform: rotate(6deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
 /* Snow Container */
 .snow-container {
   position: fixed;
@@ -775,18 +973,15 @@
 
 .christmas-wrapper {
   position: absolute;
-  left: 31%;
-  border-radius: 18px;
-  background: rgba(35, 32, 62, 0.48);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), inset 0 0 25px rgba(255, 255, 255, 0.08);
+  left: 37%;
+  top: 2px;
 }
 
 /* ===== TEXT ===== */
 .christmas-text {
-  font-size: 32px;
+  font-size: 20px;
   font-weight: 900;
-  font-family: "ChristmasFont", sans-serif;
+  font-family: "FontAwesome";
   letter-spacing: 2px;
   white-space: nowrap;
   text-align: center;
@@ -817,8 +1012,8 @@
 .christmas-tree {
   width: 180px;
   position: absolute;
-  bottom: 122px;
-  left: 725px;
+  bottom: 137px;
+  right: 658px;
   z-index: 999999;
   transform-origin: bottom center;
   animation: treeSway 5.5s cubic-bezier(0.45, 0.03, 0.29, 0.97) infinite;
@@ -849,13 +1044,6 @@
   height: 100px;
   animation: candyShake 5s ease-in-out infinite;
   transform-origin: top center;
-}
-
-.christmas-hand-wave-penguin {
-  position: absolute;
-  top: -4px;
-  left: 479px;
-  width: 173px;
 }
 
 .christmas-candy {
@@ -909,8 +1097,8 @@
 
 .present {
   position: absolute;
-  bottom: 157px;
-  left: 736px;
+  bottom: 171px;
+  right: 778px;
   width: 50px;
   height: 50px;
   cursor: pointer;
@@ -1361,47 +1549,364 @@
   background: rgba(68, 6, 6, 0.59);
 }
 
-@media (max-width: 600px) {
-  .satellite-container {
-    margin-top: 426px;
+@media (max-width: 992px) {
+  .electricity-panel,
+  .weather-card,
+  .region-relay-section,
+  .emr-temperature-section,
+  .problem-container,
+  .cards-container,
+  .harmonic-container,
+  .bus-list-container {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    bottom: auto !important;
   }
   .problem-container {
-    margin-top: 302px;
+    width: 100%;
+    z-index: 1;
   }
-  .emr-temp-row {
-    margin: 0;
+  .problem-container .problem-channels {
+    position: relative;
+    right: auto;
+    float: none !important;
+    margin-bottom: 12px;
   }
-  .christmas-tree {
-    left: 188px !important;
+  .problem-container .transparent-table {
+    width: 100% !important;
   }
-  .robot-container {
-    max-width: 298px;
-    left: 27px;
+  .cards-container {
+    float: none !important;
+    width: 100% !important;
+    max-width: 100%;
+    margin: 12px 0;
   }
-  .present {
-    left: 283px !important;
+  .harmonic-container {
+    width: 100%;
+    bottom: auto;
+  }
+  .harmonic {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    width: 100%;
+  }
+  .underline {
+    margin-bottom: 40px;
+  }
+}
+@media (max-width: 600px) {
+  :host {
+    display: block;
+    overflow-x: hidden;
+  }
+  .container-fluid {
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+  .temperature-info-container {
+    margin-top: 8px !important;
+  }
+  .temperature-info-container .hided-stream {
+    position: static;
+    margin-bottom: 8px;
+  }
+  .temperature-info-container > .d-flex {
+    flex-direction: column;
+    align-items: stretch !important;
+    gap: 12px;
+  }
+  .classic-watch {
+    width: 100%;
+    justify-content: center;
+  }
+  .electricity-panel {
+    position: relative !important;
+    left: auto !important;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    width: 100%;
+  }
+  .electricity-panel .power-box {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 140px;
+    padding: 10px 12px;
+    font-size: 13px;
+    justify-content: center;
+  }
+  .electricity-panel .reload-btn {
+    flex: 1 1 100%;
+  }
+  .electricity-panel .enginer-info-container {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .weather-widget,
+  .weather-cards,
+  .weather-card {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    top: auto !important;
+    max-width: 100%;
+    width: 100%;
   }
   .weather-card {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    justify-content: space-between;
+  }
+  .christmas-wrapper {
+    position: relative;
+    left: auto;
+    width: 100%;
+    margin: 8px 0;
+    padding: 8px;
+  }
+  .christmas-wrapper .christmas-text {
+    font-size: 18px;
+    white-space: normal;
+    line-height: 1.4;
+  }
+  .christmas-mistletoe,
+  .christmas-candy,
+  .christmas-happy-holidays,
+  .santa-deer {
+    display: none;
+  }
+  .christmas-tree {
+    position: absolute !important;
+    right: 8px !important;
+    left: auto !important;
+    bottom: 72px !important;
+    width: 90px;
+    margin: 0;
+  }
+  .present {
+    position: absolute !important;
+    right: 72px !important;
+    left: auto !important;
+    bottom: 92px !important;
+    width: 32px;
+    height: 32px;
+    margin: 0;
+  }
+  .chanells-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .chanells-container .col {
+    flex: 1 1 100%;
+    max-width: 100%;
+    width: 100%;
+  }
+  .chanells-container .channel-pill {
+    width: 100%;
+    max-width: 100%;
+  }
+  .robot-container {
+    position: absolute;
+    left: 50%;
+    top: 70%;
+    transform: translateX(-50%);
+    max-width: min(280px, 100vw - 24px);
+    margin: 0;
+    z-index: 9999;
+  }
+  .robot-container .robot-img {
+    position: absolute;
+    width: 150px;
+    height: auto;
+    top: -140px;
+    left: -48px;
+    margin: 0;
+  }
+  .robot-container .bell-icon {
+    position: absolute;
+    right: -36px;
+    top: -56px;
+    width: 64px;
+    font-size: 28px;
+  }
+  .robot-container i.bell-icon {
+    top: -35px;
+  }
+  .robot-container .robot-text {
+    display: inline-block;
+    width: auto;
+    max-width: min(280px, 100vw - 24px);
+    font-size: 14px;
+    padding: 10px !important;
+    overflow-wrap: anywhere;
+  }
+  :host-context(.christmas-theme) .robot-img {
+    position: absolute;
+    top: -184px;
+    left: -48px;
+    width: 150px;
+    height: auto;
+  }
+  .region-relay-section {
+    position: relative !important;
+    left: auto !important;
+    margin: 12px 0;
+    width: 100%;
+    overflow-x: auto;
+  }
+  .region-relay-section .row {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 6px;
+    margin: 0;
+    min-width: 0;
+  }
+  .region-relay-section .col-4 {
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: none;
+    width: auto;
+    padding: 0 !important;
+  }
+  .region-relay-section .region-relay {
+    width: 100%;
+  }
+  .region-relay-section .tiny-badge {
+    font-size: 11px;
+    padding: 0.12rem 0.2rem;
+  }
+  .region-relay-section .fit-cell {
+    font-size: 9px;
+  }
+  .region-relay-section .card-title {
+    font-size: 11px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .emr-temperature-section {
+    position: relative !important;
+    left: auto !important;
+    margin: 12px 0;
+    width: 100%;
+  }
+  .emr-temperature-section .emr-temp-row {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .emr-temperature-section .emr-temp-size {
     display: block;
-    right: 262px;
+    flex: 1 1 calc(50% - 6px);
+    max-width: calc(50% - 6px);
+    padding: 0;
   }
   .bus-list-container {
-    top: -22px;
-    right: 298px;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    right: auto !important;
+    padding: 8px 0;
+    width: 100%;
   }
-  .bus-cards {
-    display: block;
+  .bus-list-container .bus-cards {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    height: auto;
   }
-  .christmas-happy-holidays {
-    top: 164px;
-    left: -3px;
+  .bus-list-container .bus-card {
+    min-width: 100px;
+    flex: 0 0 auto;
   }
-  .christmas-mistletoe {
-    right: 36px;
+  .cards-container {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    float: none !important;
+    width: 100% !important;
+    max-width: 100%;
+    margin: 12px 0;
   }
-  .christmas-hand-wave-penguin {
-    position: absolute;
-    top: 158px !important;
-    left: 174px !important;
+  .problem-container {
+    position: relative !important;
+    right: auto !important;
+    width: 100%;
+    margin: 12px 0;
+    z-index: 1;
+  }
+  .problem-container .problem-channels {
+    position: relative;
+    right: auto;
+    float: none !important;
+    width: 100%;
+    margin-bottom: 12px;
+  }
+  .problem-container .channel-table-wrapper {
+    max-height: 220px;
+  }
+  .problem-container .transparent-table {
+    width: 100% !important;
+  }
+  .harmonic-container {
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: 100%;
+    margin: 12px 0;
+  }
+  .harmonic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+  }
+  .sys-card-sm {
+    height: auto;
+    min-height: 72px;
+  }
+  .satellite-container {
+    margin-top: 12px;
+  }
+  .satellite-container .row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 8px;
+    padding-bottom: 8px;
+  }
+  .satellite-container .satellite-box {
+    flex: 0 0 160px;
+    width: 160px;
+    max-width: 160px;
+  }
+  .satellite-container .satellite-card {
+    width: 100% !important;
+    padding: 8px;
+  }
+  .satellite-container .satellite-card .card-body {
+    font-size: 14px;
+  }
+  .underline {
+    margin-bottom: 24px;
+  }
+  .hover-tooltip-future {
+    max-width: calc(100vw - 24px);
+    left: 12px !important;
+    right: 12px;
+  }
+  .disco-container {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: auto;
+    max-width: calc(100vw - 24px);
+  }
+  .disco-container img {
+    max-width: 160px;
+  }
+  .car-wrapper {
+    display: none;
   }
 }/*# sourceMappingURL=natia.component.css.map */

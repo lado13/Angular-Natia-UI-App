@@ -13,7 +13,7 @@ body {
 /* styles.scss */
 /* Default light/day background */
 .day-theme {
-  background-image: url("../src/assets/svg/wave.svg");
+  background-image: url("../src/assets/svg/warm-bubble.svg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: left;
@@ -60,16 +60,6 @@ body {
 
 .night-theme .channel-pill {
   border: none !important;
-}
-
-.day-theme .christmas-tree {
-  position: absolute;
-  bottom: 118px !important;
-}
-
-.day-theme .present {
-  position: absolute;
-  bottom: 156px !important;
 }
 
 .day-theme .card-header {

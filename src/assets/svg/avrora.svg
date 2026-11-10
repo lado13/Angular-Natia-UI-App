@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" preserveAspectRatio="xMidYMid slice" style="width: 100vw; height: 100vh; display: block; background-color: #120524;">
+  <defs>
+    <!-- Deep Violet-Purple Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#18042c" />
+      <stop offset="45%" stop-color="#120524" />
+      <stop offset="100%" stop-color="#240a3d" />
+    </linearGradient>
+
+    <!-- Aurora Ribbon Gradients updated to Violet, Mentol/Mint, Green, and Purple -->
+    <linearGradient id="auroraCore" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#6b11ff" stop-opacity="0" />
+      <stop offset="22%" stop-color="#8a2be2" stop-opacity="0.85" />
+      <stop offset="50%" stop-color="#b14bff" stop-opacity="0.9" />
+      <stop offset="76%" stop-color="#00f5b4" stop-opacity="0.95" />
+      <stop offset="100%" stop-color="#10e796" stop-opacity="1" />
+    </linearGradient>
+
+    <linearGradient id="auroraGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5500cc" stop-opacity="0" />
+      <stop offset="35%" stop-color="#7a1ac6" stop-opacity="0.6" />
+      <stop offset="68%" stop-color="#00e699" stop-opacity="0.7" />
+      <stop offset="100%" stop-color="#00ffa3" stop-opacity="0.85" />
+    </linearGradient>
+
+    <!-- Soft Blur Effect -->
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="35" />
+    </filter>
+  </defs>
+
+  <style>
+    @keyframes waveMotion1 {
+      0% {
+        transform: skewX(-3deg) translateX(0px) scaleY(1);
+      }
+      50% {
+        transform: skewX(4deg) translateX(25px) scaleY(1.08);
+      }
+      100% {
+        transform: skewX(-3deg) translateX(0px) scaleY(1);
+      }
+    }
+
+    @keyframes waveMotion2 {
+      0% {
+        transform: skewX(5deg) translateX(0px) scaleY(1.05);
+      }
+      50% {
+        transform: skewX(-4deg) translateX(-30px) scaleY(0.95);
+      }
+      100% {
+        transform: skewX(5deg) translateX(0px) scaleY(1.05);
+      }
+    }
+
+    @keyframes pulseOpacity {
+      0%, 100% { opacity: 0.75; }
+      50% { opacity: 0.95; }
+    }
+
+    .bg-base {
+      fill: url(#bgGrad);
+    }
+
+    .aurora-deep-glow {
+      animation: waveMotion2 14s ease-in-out infinite alternate;
+      transform-origin: center center;
+    }
+
+    .aurora-main-ribbon {
+      animation: waveMotion1 9s ease-in-out infinite alternate, pulseOpacity 7s ease-in-out infinite;
+      transform-origin: center center;
+    }
+  </style>
+
+  <!-- Deep Background Layer -->
+  <rect class="bg-base" width="100%" height="100%" />
+
+  <!-- Outer Soft Glow Ribbon -->
+  <path class="aurora-deep-glow" filter="url(#softGlow)" fill="url(#auroraGlow)" d="M 520 -100 C 580 250, 470 650, 540 1100 L 1050 1100 L 1050 -100 Z" />
+
+  <!-- Vibrant Inner Ribbon -->
+  <path class="aurora-main-ribbon" filter="url(#softGlow)" fill="url(#auroraCore)" d="M 560 -100 C 630 220, 500 680, 580 1100 L 1050 1100 L 1050 -100 Z" />
+</svg>

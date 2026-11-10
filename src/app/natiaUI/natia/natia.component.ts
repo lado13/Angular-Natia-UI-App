@@ -88,7 +88,7 @@ export class NatiaComponent implements OnInit {
     { id: 'squad', src: 'assets/gif/squad-team.gif', kind: 'cross', durationMs: 40000, alt: 'Squad' },
     { id: 'peek', src: 'assets/gif/pengu-pudgy.gif', kind: 'peek', durationMs: 8000, alt: 'Spy penguin' },
     { id: 'gossip', src: 'assets/gif/gasp-gossip.gif', kind: 'peek', durationMs: 8000, alt: 'Shhh penguin' },
-    { id: 'tiger', src: 'assets/gif/tiger.gif', kind: 'cross', durationMs: 20000, alt: 'Tiger' },
+    { id: 'tiger', src: 'assets/gif/santa-claus-runing.gif', kind: 'cross', durationMs: 20000, alt: 'Tiger' },
     { id: 'car', src: 'assets/gif/car-cute.gif', kind: 'cross-reverse', durationMs: 60000, alt: 'Car' },
   ];
   private readonly peekCorners: PeekCorner[] = ['bottom-left', 'bottom-right'];
@@ -107,8 +107,8 @@ export class NatiaComponent implements OnInit {
     { text: '♥', heart: true },
   ];
 
-  private readonly robotGifDefault = 'assets/gif/boolb-robot.gif';
-  private readonly robotGifChristmas = 'assets/gif/sports-sportsmanias.gif';
+  private readonly robotGifDefault = 'assets/gif/green-natia.gif';
+  private readonly robotGifChristmas = 'assets/gif/red-natia.gif';
 
   private readonly discoAnimations: Record<string, string> = {
     Morning: 'assets/gif/morning.gif',

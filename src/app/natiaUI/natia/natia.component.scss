@@ -383,16 +383,21 @@
 
 
 .robot-img {
+    // position: absolute;
+    // width: 306px;
+    // height: 326px;
+    // top: -288px;
+    // left: -96px;
     position: absolute;
-    width: 306px;
-    height: 326px;
-    top: -288px;
-    left: -96px;
+    width: 336px;
+    height: 675px;
+    top: -631px;
+    left: -122px;
 }
 
-:host-context(.christmas-theme) .robot-img {
-    top: -320px;
-}
+// :host-context(.christmas-theme) .robot-img {
+//     top: -320px;
+// }
 
 
 
