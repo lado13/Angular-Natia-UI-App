@@ -86,7 +86,7 @@
     /* ← ADD THIS */
     padding: 12px 18px;
     border-radius: 12px;
-    z-index: 9999;
+    z-index: 999999999;
     pointer-events: auto;
 
     /* Glassmorphism effect */
@@ -1245,7 +1245,7 @@ i.bell-icon {
 .christmas-text-word {
     display: inline-block;
     margin-right: 10px;
-    color: #ff2700;
+    color: #ffa000;
     /* SOLID GOLD */
     animation: goldFloat 4s ease-in-out infinite;
     animation-delay: calc(var(--i) * 0.25s);
