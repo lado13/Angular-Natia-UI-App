@@ -24,7 +24,7 @@
       <source src="assets/video/christmas-tree-in-town.mp4" type="video/mp4" />
     </video>
     <video class="bg-video night-video" autoplay muted loop playsinline>
-      <source src="assets/video/magic-snowflakes.mp4" type="video/mp4" />
+      <source src="assets/video/glowing-christmas-tree.mp4" type="video/mp4" />
     </video>
   </ng-container>
 
@@ -241,7 +241,7 @@
       <div class="row chanells-container">
         <hr class="border-light line" />
 
-        <div class="col p-0 " *ngFor="let ch of channels; trackBy: trackByOrder">
+        <div class="col p-0 " *ngFor="let ch of visibleChannels; trackBy: trackByOrder">
           <div class="badge text-center channel-pill" (click)="onChannelHover(ch.ChanellName, $event)" [ngClass]="{
             'natia-error pulse-error': ch.HaveError,
             'natia-test text-light opacity-50': ch.IsDIsable && !ch.HaveError,

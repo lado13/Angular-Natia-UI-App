@@ -51,6 +51,10 @@ export class NatiaComponent implements OnInit {
   //api channels
   channels: TVChannel[] = [];
 
+  get visibleChannels(): TVChannel[] {
+    return this.channels.filter(channel => !channel.IsDIsable);
+  }
+
   //sattelite
   satellites: Satellite[] = [];
 
